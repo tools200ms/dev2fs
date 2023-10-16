@@ -1,0 +1,85 @@
+
+# variables declarations
+OUTPUT := teafs
+OUTPUT_LIB := libTeafs.so
+
+CC := gcc
+LIBS := -lfuse -L.
+CFLAGS := -D_FILE_OFFSET_BITS=64
+
+SOURCES_LIB := ${wildcard lib/*.c}
+OBJS_LIB := ${patsubst %.c, %.o, ${SOURCES_S1}}
+
+SOURCES := ${wildcard *.c format/*.c shell/*.c core/*.c lib/*.c}
+OBJS := ${patsubst %.c, %.o, ${SOURCES}}
+
+# setting additional options
+
+CFLAGS += -Wall
+#CFLAGS += -Wimplicit-function-declaration
+
+ifeq ("${DEBUG}","y")
+	CFLAGS += -g1
+else ifeq ("${DEBUG}","Y")
+	CFLAGS += -g3
+endif
+
+# targets definitions
+
+.PHONY : one-command-compile \
+         clean deepclean
+
+#all: ${OUTPUT}
+
+${OUTPUT} : ${OBJS}
+	${CC} ${OBJS} ${LIBS} -o ${OUTPUT}
+
+compile : ${OUTPUT}
+
+testrun: compile
+	cd ../test && ./test.sh prepare
+	echo args
+	#./${OUTPUT} ../test/str ../test/mnt
+
+clean:
+	rm -f ${OBJS}
+	rm -f ${OUTPUT}
+
+	rm -f ${OUTPUT_LIB}
+
+deepclean: clean
+	find . -type f -name "*~" -exec rm '{}' \;
+	find . -type f -name "*.bak" -exec rm '{}' \;
+
+depend:
+	makedepend -Y. *.c core/*.c shell/*.c lib/*.c
+# DO NOT DELETE
+
+teafs.o: teafs.h lib/messages.h lib/messages_en.h shell/config.h
+teafs.o: lib/messages.h shell/loader.h shell/mapper.h shell/config.h
+teafs.o: shell/loader.h lib/stringBuffer.h lib/radixTrie.h lib/tags.h
+teafs.o: lib/radixTrie.h core/map.h lib/list.h core/resources.h core/map.h
+teafs.o: shell/system.h
+core/engine.o: lib/messages.h lib/tags.h lib/radixTrie.h core/engine.h
+core/engine.o: core/map.h lib/radixTrie.h
+core/map.o: lib/messages.h core/map.h
+core/operations.o: lib/messages.h teafs.h shell/mapper.h shell/config.h
+core/operations.o: shell/loader.h lib/stringBuffer.h lib/radixTrie.h
+core/operations.o: lib/tags.h lib/radixTrie.h core/map.h lib/list.h
+core/operations.o: core/resources.h core/map.h core/resources.h core/engine.h
+core/operations.o: core/operations.h format/hlmapping.h core/engine.h
+core/resources.o: core/resources.h lib/messages.h
+shell/config.o: teafs.h shell/config.h
+shell/loader.o: lib/messages.h shell/config.h shell/loader.h core/engine.h
+shell/mapper.o: lib/messages.h shell/mapper.h shell/config.h shell/loader.h
+shell/mapper.o: lib/stringBuffer.h lib/radixTrie.h lib/tags.h lib/radixTrie.h
+shell/mapper.o: core/map.h lib/list.h core/resources.h core/map.h
+shell/system.o: teafs.h shell/config.h shell/mapper.h shell/loader.h
+shell/system.o: lib/stringBuffer.h lib/radixTrie.h lib/tags.h lib/radixTrie.h
+shell/system.o: core/map.h lib/list.h core/resources.h core/map.h
+shell/system.o: shell/system.h core/operations.h core/engine.h
+lib/list.o: lib/list.h
+lib/messages.o: teafs.h lib/messages.h lib/messages_en.h
+lib/radixTrie.o: lib/radixTrie.h lib/messages.h lib/messages_en.h
+lib/stringBuffer.o: lib/messages.h lib/messages_en.h lib/stringBuffer.h
+lib/tags.o: lib/tags.h lib/radixTrie.h lib/messages.h lib/messages_en.h
