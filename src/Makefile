@@ -1,7 +1,7 @@
 
 # variables declarations
-OUTPUT := teafs
-OUTPUT_LIB := libTeafs.so
+OUTPUT := dev2fs
+OUTPUT_LIB := libdev2fs.so
 
 CC := gcc
 LIBS := -lfuse -L.

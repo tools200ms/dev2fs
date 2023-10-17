@@ -18,13 +18,13 @@
  */
 
 
-#ifndef _TEAFS_ORG_SHELL_CONFIG_H_
-#define _TEAFS_ORG_SHELL_CONFIG_H_
+#ifndef _DEV2FS_200MS_NET__SHELL_CONFIG_H_
+#define _DEV2FS_200MS_NET__SHELL_CONFIG_H_
 
 #include "../lib/messages.h"
 
-/* general flags used by nottree */
-/* forces nottree to print it's and FUSE version/help and exit
+/* general flags used by dev2fs */
+/* forces dev2fs to print it's and FUSE version/help and exit
 */
 #define CONF_ARG_VERSION				"--version"
 #define CONF_ARG_SHORT_VERSION			"-V"
@@ -32,7 +32,7 @@
 #define CONF_ARG_SHORT_HELP				"-h"
 
 /* debug and foreground passed as argument or option
-	forces nottree to work in verbose mode
+	forces dev2fs to activate verbose mode
 */
 #define CONF_OPT_DEBUG					"debug"
 #define CONF_ARG_DEBUG					"-d"
@@ -43,6 +43,7 @@
 #define CONF_OPT_NOTALLOWED_DIR_NAME	"notallowdir=%s"
 #define CONF_OPT_NOTALLOWED_FILE_NAME	"notallowfile=%s"
 
+#define CONF_ARG_MAP					"-m %s"
 #define CONF_ARG_NOTALLOWED_DIR_NAME	"-D %s"
 #define CONF_ARG_NOTALLOWED_FILE_NAME	"-F %s"
 
@@ -78,4 +79,4 @@ void conf_destroy( Config *conf );
 */
 void conf_print_parameters( FILE *stream, struct config_data *conf_data );
 
-#endif // _TEAFS_ORG_SHELL_CONFIG_H_
+#endif // _DEV2FS_200MS_NET__SHELL_CONFIG_H_

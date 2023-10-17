@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  os_alp: 
+    build:
+      context: .
+      dockerfile: Dockerfile-alp
+    volumes: 
+      - ../src:/home/proj/src
+      - ../Makefile:/home/proj/Makefile
+      - ../test/mnt:/d2mnt
+      - ../test/submnt1:/d2submnt1
+      - ../test/submnt2:/d2submnt2
+    entrypoint: ["/usr/bin/tail", "-f", "/dev/stderr"]

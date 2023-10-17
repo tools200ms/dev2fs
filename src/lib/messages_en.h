@@ -30,7 +30,7 @@
 	configure messages: 
 */
 
-#define MSG_PROGRAM_USAGE 		"\"storage directory\" \"mount point\" [options]"
+#define MSG_PROGRAM_USAGE 		"[-m \"file/dir.\">\"mnt. relative path\" ...] \"mount point\" [options]"
 
 #define MSG_VERSION_INFO 		"teaFS filesystem version"
 

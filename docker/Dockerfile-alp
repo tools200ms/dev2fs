@@ -1,0 +1,17 @@
+FROM 200ms/alpinenet_dev2
+
+ENV UNAME='proj'
+ENV DEVUID=1000
+
+ENV PCKGS_BASE='bash'
+ENV PCKGS_DEV='make gcc libc-dev fuse-dev'
+
+RUN dev2_addtools.sh $PCKGS_BASE
+
+RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $UNAME -u $DEVUID
+
+USER $UNAME
+WORKDIR /home/$UNAME
+
+
+ENTRYPOINT ["bash"]

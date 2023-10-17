@@ -18,16 +18,16 @@
  */
 
 
-#ifndef _TEAFS_ORG_TEAFS_H_
-#define _TEAFS_ORG_TEAFS_H_
+#ifndef _DEV2FS_200MS_NET__DEV2FS_H_
+#define _DEV2FS_200MS_NET__DEV2FS_H_
 
 #define FUSE_USE_VERSION 26
 
 
-#define NOTTREE_AUTHORS "Mateusz Piwek <Mateusz@teafs.org>"
+#define DEV2FS_AUTHORS "Mateusz Piwek <Mateusz@teafs.org>"
 
 /*
-	Version number format:
+	Version number notation:
 	major.minor.maintenance.status<-revision> <ALPHA|BETA|RC>
 	
 	major:
@@ -70,7 +70,17 @@
 	  still not complete.
 	  The '-' sign can be used only for alpha and beta releases.
 */
-#define NOTTREE_VERSION "1.0-2.0.0-88pre ALPHA"
+#define DEV2FS_VERSION "0.1.0.0-ALPHA"
+
+/* Detect if 'musl libc' is used, from:
+ * https://stackoverflow.com/questions/58177815/how-to-actually-detect-musl-libc
+ */
+#define _GNU_SOURCE
+#include <features.h>
+#ifndef __USE_GNU
+    #define __MUSL__
+#endif
+#undef _GNU_SOURCE /* don't contaminate other includes unnecessarily */
 
 
-#endif // _TEAFS_ORG_TEAFS_H_
+#endif // _DEV2FS_200MS_NET__DEV2FS_H_

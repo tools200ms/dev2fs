@@ -18,3 +18,22 @@ Without Dev2FS there is the need to play with 'docker create/stop/start/save', '
 
 At this point it's a work in progress, the code is based on [TeaFS filesystem](https://sourceforge.net/projects/teafs-legacy/) that I developed a long years ago. Purpose was to experiment with treating directory names as 'tags'. The assumption was that it would help in data organization.
 
+
+# Requirments, compilation and installation
+
+Dev2FS is a C program that requires Libc and Fuse liblaries to function, ensure you have following tools:
+make gcc libc-dev fuse-dev
+
+When requirments are meet go to Dev2FS root directory (directory where this README.md file resides) and issue:
+
+>  make
+This will compile file ./src/dev2fs
+
+To install (e.g. copy to /usr/bin) issue as root:
+>  make install (as root)
+
+# Launch
+
+The points bellow explain step-by-step how to launch the Dev2FS.
+
+

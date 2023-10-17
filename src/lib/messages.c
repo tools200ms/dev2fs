@@ -41,7 +41,7 @@ char *msg_getProgramName()
 
 void msg_notTreeVersion( FILE *stream )
 {
-	fprintf( stream, "%s: %s\n", MSG_VERSION_INFO, NOTTREE_VERSION );
+	fprintf( stream, "%s: %s\n", MSG_VERSION_INFO, DEV2FS_VERSION );
 }
 
 void msg_notTreeHelp( FILE *stream )

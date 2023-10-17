@@ -1,10 +1,10 @@
 
 SRC_DIR := ./src/
 
-EXEC_NAME := teafs
+EXEC_NAME := dev2fs
 PREFIX := /usr/local/bin
 
-RELEASE_NAME := teaFS-${shell cat src/teafs.h | grep "\#define[[:space:]][[:space:]]*NOTTREE_VERSION" | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
+RELEASE_NAME := ${EXEC_NAME}-${shell cat src/${EXEC_NAME}.h | grep "\#define[[:space:]][[:space:]]*DEV2FS_VERSION" | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
 
 
 .PHONY: compile install clean clean_current_dir release

@@ -32,10 +32,10 @@
 #include "config.h"
 
 
-static int nottree_options_proc( 		void *data, 
-													const char *arg, 
-													int key, 
-													struct fuse_args *outargs 	);
+static int dev2fs_options_proc( 		void *data,
+										const char *arg,
+										int key,
+										struct fuse_args *outargs 	);
 
 #define NOTTREE_COMMANDLINE_OPT_KEY( opt_template, opt_var, value ) \
 			{ opt_template, offsetof( struct config_data, opt_var ), value }
@@ -110,14 +110,14 @@ Config *conf_init( int argc, char *argv[] )
 	conf->fuse_arguments->allocated = 0; 
 
 
-	/* Sets default value for the case when nottree_options_proc() exits 
+	/* Sets default value for the case when dev2fs_options_proc() exits
 		with an error value. */
 	conf_parser_program_abort_cause = CONF_PARSER_WRONG_ARG;
 
 	if( (fuse_opt_parse( 	conf->fuse_arguments, 
 									&(conf->data), 
 									nottree_commandline_opts, 
-									nottree_options_proc ) 		== -1) 
+									dev2fs_options_proc ) 		== -1)
 								 || 
 									confPostValidationErrors( &(conf->data) ) )
 	{
@@ -153,8 +153,13 @@ Config *conf_init( int argc, char *argv[] )
 			/* By default fuse_main() prints help/version messages to stderr, 
 				if stream is set to stdout, then value of stdout is assigned 
 				to stderr, thus FUSE is forced to print to standard output. */
-			stderr = stream;
-			
+			/* If instead of 'glibc' 'musl libc' is used (case in Alpine),
+			   stderr is defined as 'const', thus this assigment is not possible
+			 */
+			#if !defined( __MUSL__)
+				stderr = stream;
+			#endif
+
 			/* prints help/version */
 			fuse_main( 2, targv, NULL, NULL );
 		}
@@ -184,7 +189,7 @@ void conf_destroy( struct config *conf )
 #define CONF_PARSE_DISCARD_FLAG	return  0
 #define CONF_PARSE_EXIT_PROGRAM	return -1
 
-static int nottree_options_proc( 	void *data, 
+static int dev2fs_options_proc( 	void *data,
 									const char *arg,
 									int key,
 									struct fuse_args *outargs 	)
@@ -201,22 +206,21 @@ static int nottree_options_proc( 	void *data,
 		
 			MSG_DEBUG_INFO( "FUSE_OPT_KEY_NONOPT" );
 			MSG_DEBUG_BR;
+
 			
-			
-			
-			switch( 	((conf_data_ptr->source_dir_path  == NULL)? 0 : 1) + 
-						((conf_data_ptr->mount_point_path == NULL)? 0 : 2) )
+			switch( 	((conf_data_ptr->source_dir_path  == NULL) ? 0 : 1) +
+						((conf_data_ptr->mount_point_path == NULL) ? 0 : 2) )
 			{
 				case 0:	// source_dir_path & mount_point_path are NULLs
 					conf_data_ptr->source_dir_path = strdup( arg );
-		CONF_PARSE_DISCARD_FLAG;
+				CONF_PARSE_DISCARD_FLAG;
 		
 				case 1:	// only mount_point_path is NULL
 					conf_data_ptr->mount_point_path = strdup( arg );
-		CONF_PARSE_KEEP_FLAG;
+				CONF_PARSE_KEEP_FLAG;
 		
 				case 3: // source_dir_path & mount_point_path are set
-		CONF_PARSE_EXIT_PROGRAM;
+				CONF_PARSE_EXIT_PROGRAM;
 			}
 
 			//shouldn't happen
