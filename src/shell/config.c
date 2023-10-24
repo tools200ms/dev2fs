@@ -24,7 +24,7 @@
 #include <string.h>
 
 /* FUSE system */
-#include "../devfs.h"
+#include "../dev2fs.h"
 #include <fuse.h>
 #include <fuse/fuse_opt.h>
 /* *********** */
@@ -257,24 +257,3 @@ static int dev2fs_options_proc( 	void *data,
 
 	CONF_PARSE_KEEP_FLAG;
 }
-
-void conf_print_parameters( FILE *stream, struct config_data *conf_data )
-{
-	fprintf	( stream, 	"%s started with the following parameters:\n"\
-								"      source dir: %s\n"\
-								"       mount dir: %s\n"\
-								" not allowed dir: %s\n"\
-								"not allowed file: %s\n", 
-							msg_getProgramName(), 
-							( 	conf_data->source_dir_path != NULL ) ? 
-								conf_data->source_dir_path : MSG_NOTDEFINED, 
-							( 	conf_data->mount_point_path != NULL ) ? 
-								conf_data->mount_point_path : MSG_NOTDEFINED, 
-							( 	conf_data->notallowed_dir_name != NULL ) ? 
-								conf_data->notallowed_dir_name : MSG_NOTDEFINED, 
-							( 	conf_data->notallowed_file_name != NULL ) ? 
-								conf_data->notallowed_file_name : MSG_NOTDEFINED
-				);
-
-}
-

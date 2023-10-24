@@ -55,7 +55,7 @@ depend:
 	makedepend -Y. *.c core/*.c shell/*.c lib/*.c
 # DO NOT DELETE
 
-teafs.o: devfs.h lib/messages.h lib/messages_en.h shell/config.h
+teafs.o: dev2fs.h lib/messages.h lib/messages_en.h shell/config.h
 teafs.o: lib/messages.h shell/loader.h shell/mapper.h shell/config.h
 teafs.o: shell/loader.h lib/stringBuffer.h lib/radixTrie.h lib/tags.h
 teafs.o: lib/radixTrie.h core/map.h lib/list.h core/resources.h core/map.h
@@ -63,23 +63,23 @@ teafs.o: shell/system.h
 core/engine.o: lib/messages.h lib/tags.h lib/radixTrie.h core/engine.h
 core/engine.o: core/map.h lib/radixTrie.h
 core/map.o: lib/messages.h core/map.h
-core/operations.o: lib/messages.h devfs.h shell/mapper.h shell/config.h
+core/operations.o: lib/messages.h dev2fs.h shell/mapper.h shell/config.h
 core/operations.o: shell/loader.h lib/stringBuffer.h lib/radixTrie.h
 core/operations.o: lib/tags.h lib/radixTrie.h core/map.h lib/list.h
 core/operations.o: core/resources.h core/map.h core/resources.h core/engine.h
 core/operations.o: core/operations.h format/hlmapping.h core/engine.h
 core/resources.o: core/resources.h lib/messages.h
-shell/config.o: devfs.h shell/config.h
+shell/config.o: dev2fs.h shell/config.h
 shell/loader.o: lib/messages.h shell/config.h shell/loader.h core/engine.h
 shell/mapper.o: lib/messages.h shell/mapper.h shell/config.h shell/loader.h
 shell/mapper.o: lib/stringBuffer.h lib/radixTrie.h lib/tags.h lib/radixTrie.h
 shell/mapper.o: core/map.h lib/list.h core/resources.h core/map.h
-shell/system.o: devfs.h shell/config.h shell/mapper.h shell/loader.h
+shell/system.o: dev2fs.h shell/config.h shell/mapper.h shell/loader.h
 shell/system.o: lib/stringBuffer.h lib/radixTrie.h lib/tags.h lib/radixTrie.h
 shell/system.o: core/map.h lib/list.h core/resources.h core/map.h
 shell/system.o: shell/system.h core/operations.h core/engine.h
 lib/list.o: lib/list.h
-lib/messages.o: devfs.h lib/messages.h lib/messages_en.h
+lib/messages.o: dev2fs.h lib/messages.h lib/messages_en.h
 lib/radixTrie.o: lib/radixTrie.h lib/messages.h lib/messages_en.h
 lib/stringBuffer.o: lib/messages.h lib/messages_en.h lib/stringBuffer.h
 lib/tags.o: lib/tags.h lib/radixTrie.h lib/messages.h lib/messages_en.h

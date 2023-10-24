@@ -24,7 +24,7 @@
 /* ***************** */
 
 /* FUSE system */
-#include "../devfs.h"
+#include "../dev2fs.h"
 #include <fuse.h>
 /* *********** */
 

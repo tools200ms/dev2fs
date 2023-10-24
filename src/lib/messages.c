@@ -20,7 +20,7 @@
 
 #include <stdio.h>
 
-#include "../devfs.h"
+#include "../dev2fs.h"
 #include "messages.h"
 
 static char *msg_program_name = NULL;

@@ -5,10 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-alp
+    cap_add: ['SYS_ADMIN']
+    devices:
+      - /dev/fuse
     volumes: 
       - ../src:/home/proj/src
       - ../Makefile:/home/proj/Makefile
-      - ../test/mnt:/d2mnt
-      - ../test/submnt1:/d2submnt1
-      - ../test/submnt2:/d2submnt2
+      - ../test/str:/d2str
+      - ../test/submnt1:/d2strsubmnt1
+      - ../test/submnt2:/d2strsubmnt2
     entrypoint: ["/usr/bin/tail", "-f", "/dev/stderr"]

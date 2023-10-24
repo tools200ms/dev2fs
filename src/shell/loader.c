@@ -93,6 +93,12 @@ void load_init( const struct config *conf, struct loader *load )
 	*/
 	char *source_dir_path = load->source_dir_path = strdup( conf->data.source_dir_path );
 
+	load->str_uid = source_dir_statbuf.st_uid;
+	load->str_gid = source_dir_statbuf.st_gid;
+
+	load->mnt_uid = mountpoint_dir_statbuf.st_uid;
+	load->mnt_gid = mountpoint_dir_statbuf.st_gid;
+
 	/**
 		cut slash symbols from the end of source directory path
 	*/
@@ -139,5 +145,27 @@ void loadDirectoryTest( char *dir_name, char *purpose, struct stat *dir_statbuf 
 	{
 		MSG_ERROR_AND_EXIT( "is not a directory" );
 	}
+}
+
+void loadedconf_print_summary(FILE* stream, struct config_data* conf_data, struct loader* load)
+{
+	fprintf	( stream, 	"%s started with the following parameters:\n"\
+								"     storage dir (fixed uid/gid: %d/%d): %s\n"\
+								"       mount dir (fixed uid/gid: %d/%d): %s\n"\
+								" not allowed dir: %s\n"\
+								"not allowed file: %s\n",
+							msg_getProgramName(),
+				load->str_uid, load->str_gid,
+							( 	conf_data->source_dir_path != NULL ) ?
+								conf_data->source_dir_path : MSG_NOTDEFINED,
+				load->mnt_uid, load->mnt_gid,
+							( 	conf_data->mount_point_path != NULL ) ?
+								conf_data->mount_point_path : MSG_NOTDEFINED,
+							( 	conf_data->notallowed_dir_name != NULL ) ?
+								conf_data->notallowed_dir_name : MSG_NOTDEFINED,
+							( 	conf_data->notallowed_file_name != NULL ) ?
+								conf_data->notallowed_file_name : MSG_NOTDEFINED
+				);
+
 }
 

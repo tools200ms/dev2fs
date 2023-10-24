@@ -4,8 +4,7 @@ SRC_DIR := ./src/
 EXEC_NAME := dev2fs
 PREFIX := /usr/local/bin
 
-RELEASE_NAME := ${EXEC_NAME}-${shell echo test}
-#grep "#define[[:space:]][[:space:]]*DEV2FS_VERSION" src/${EXEC_NAME}.h | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
+RELEASE_NAME := ${EXEC_NAME}-${shell grep "#define[[:space:]][[:space:]]*DEV2FS_VERSION" src/${EXEC_NAME}.h | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
 
 
 .PHONY: compile install clean clean_current_dir release

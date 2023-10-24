@@ -1,17 +1,25 @@
 FROM 200ms/alpinenet_dev2
 
-ENV UNAME='proj'
+ENV DUNAME='proj'
 ENV DEVUID=1000
+ENV DEVGID=1000
+
+ENV RUNAME='test'
+ENV RUNUID=3300
+ENV RUNGID=3300
 
 ENV PCKGS_BASE='bash'
 ENV PCKGS_DEV='make gcc libc-dev fuse-dev'
 
-RUN dev2_addtools.sh $PCKGS_BASE
+RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV
 
-RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $UNAME -u $DEVUID
+RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
+    printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $DUNAME -u $DEVUID -g $DEVGID
+RUN RUNHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
+    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -u $RUNUID -g $RUNGID
 
-USER $UNAME
-WORKDIR /home/$UNAME
+USER $DUNAME
+WORKDIR /home/$DUNAME
 
 
 ENTRYPOINT ["bash"]

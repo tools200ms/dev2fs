@@ -74,9 +74,4 @@ typedef struct config
 Config *conf_init( int argc, char *argv[] );
 void conf_destroy( Config *conf );
 
-/**
-	prints struct config_data content in human redable format
-*/
-void conf_print_parameters( FILE *stream, struct config_data *conf_data );
-
 #endif // _DEV2FS_200MS_NET__SHELL_CONFIG_H_

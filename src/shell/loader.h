@@ -25,6 +25,9 @@ struct loader
 {
 	char *source_dir_path;
 	int source_dir_path_length;
+
+	uid_t str_uid, mnt_uid;
+	gid_t str_gid, mnt_gid;
 };
 //engine_data;
 
@@ -38,5 +41,9 @@ void load_init( const struct config *conf, struct loader *load );
 */
 void load_release();// struct loader *load );
 
+/**
+	print information about current configuration
+*/
+void loadedconf_print_summary( FILE *stream, struct config_data *conf_data, struct loader *load );
 
 #endif // _TEAFS_ORG_SHELL_LOADER_H_

@@ -22,7 +22,7 @@
 #include <string.h>
 
 /* FUSE system */
-#include "devfs.h"
+#include "dev2fs.h"
 #include <fuse.h>
 /* *********** */
 
@@ -43,14 +43,14 @@
 // include 'major' function
 #include <sys/sysmacros.h>
 
-struct teafs_references
+struct dev2fs_references
 {
 	Config *conf;
 	struct loader *load;
 	struct mapper *map;
 	struct system *sys;
 }
-tea_ref;
+d2_ref;
 
 void *teafs_init( struct fuse_conn_info *conn )
 {
@@ -60,28 +60,28 @@ void *teafs_init( struct fuse_conn_info *conn )
 
 void teafs_terminate()
 {
-	if( tea_ref.sys != NULL )
+	if( d2_ref.sys != NULL )
 	{
-		sys_release( tea_ref.sys );
-		free( tea_ref.sys );
+		sys_release( d2_ref.sys );
+		free( d2_ref.sys );
 	}
 
-	if( tea_ref.map != NULL )
+	if( d2_ref.map != NULL )
 	{
-		map_release( tea_ref.map );
-		free( tea_ref.map );
+		map_release( d2_ref.map );
+		free( d2_ref.map );
 	}
 
 	//load_release();
-	if( tea_ref.load != NULL )
+	if( d2_ref.load != NULL )
 	{
-		load_release( tea_ref.load );
-		free( tea_ref.load );
+		load_release( d2_ref.load );
+		free( d2_ref.load );
 	}
 
-	if( tea_ref.conf != NULL )
+	if( d2_ref.conf != NULL )
 	{
-		conf_destroy( tea_ref.conf );
+		conf_destroy( d2_ref.conf );
 	}
 }
 
@@ -89,48 +89,49 @@ int main( int argc, char *argv[] )
 {
 	int ret_val = 0;
 
-	memset( &tea_ref, 0, sizeof( struct teafs_references ) );
+	memset( &d2_ref, 0, sizeof( struct dev2fs_references ) );
 
 	/**
 	 *	teaFS configuration
 	*/
 
-	if( (tea_ref.conf = conf_init( argc, argv )) == NULL )
+	if( (d2_ref.conf = conf_init( argc, argv )) == NULL )
 		return -1;
 
-	MSG_VERBOSE_FUN_ARGS( conf_print_parameters, &((*(tea_ref.conf)).data) );
 	//add handler to call at exit
 
-	if( (tea_ref.load = malloc( sizeof (struct loader) )) == NULL )
+	if( (d2_ref.load = malloc( sizeof (struct loader) )) == NULL )
 		return 1;
-	memset( tea_ref.load, 0, sizeof (struct loader) );
+	memset( d2_ref.load, 0, sizeof (struct loader) );
 
-	load_init( tea_ref.conf, tea_ref.load );
+	load_init( d2_ref.conf, d2_ref.load );
 	MSG_VERBOSE( "CONFIG: OK, configuration successfully loaded" );
 
-	if( (tea_ref.map = malloc( sizeof (struct mapper) )) == NULL )
+	MSG_VERBOSE_FUN_ARGS( loadedconf_print_summary, &((*(d2_ref.conf)).data), d2_ref.load );
+
+	if( (d2_ref.map = malloc( sizeof (struct mapper) )) == NULL )
 		return 1;
 
-	memset( tea_ref.map, 0, sizeof (struct mapper) );
+	memset( d2_ref.map, 0, sizeof (struct mapper) );
 
 	//MSG_VERBOSE( "Checking source directory" );
-	mapp_init( tea_ref.conf, tea_ref.load, tea_ref.map );
+	mapp_init( d2_ref.conf, d2_ref.load, d2_ref.map );
 
 	MSG_VERBOSE( "DATA SOURCE: OK, source directory tagged and mapped" );
 
 	//"no integity check parformed, it's advised to run with -C"
 
-	if( (tea_ref.sys = malloc( sizeof (struct system) )) == NULL )
+	if( (d2_ref.sys = malloc( sizeof (struct system) )) == NULL )
 		return 1;
-	memset( tea_ref.sys, 0, sizeof (struct system) );
+	memset( d2_ref.sys, 0, sizeof (struct system) );
 
-	sys_init( tea_ref.conf, tea_ref.load, tea_ref.map, tea_ref.sys );
+	sys_init( d2_ref.conf, d2_ref.load, d2_ref.map, d2_ref.sys );
 
 
 	MSG_VERBOSE( "TEAFS: Starting FUSE" );
-	ret_val = fuse_main( 	(*((*(tea_ref.conf)).fuse_arguments)).argc,
-									(*((*(tea_ref.conf)).fuse_arguments)).argv,
-									(tea_ref.sys)->operations,
+	ret_val = fuse_main( 	(*((*(d2_ref.conf)).fuse_arguments)).argc,
+									(*((*(d2_ref.conf)).fuse_arguments)).argv,
+									(d2_ref.sys)->operations,
 									NULL );
 
 	// TODO add signals handler and call it when exit signal comes !!!
