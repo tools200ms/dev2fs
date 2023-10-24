@@ -1,4 +1,4 @@
-/* teafs.h --- Basic definitions for TeaFS.
+/* devfs.h --- Basic definitions for TeaFS.
  * Copyright (C) 2012 Mateusz Piwek
  * 
  * This file is part of TeaFS.

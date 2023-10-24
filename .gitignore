@@ -2,8 +2,9 @@
 *~
 *.o
 *.so
-build/
+build/*
+release/*
 
 # Development IDEs:
-.kdev4/
+.kdev4/*
 *.kdev4

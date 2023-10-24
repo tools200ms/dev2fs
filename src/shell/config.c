@@ -24,7 +24,7 @@
 #include <string.h>
 
 /* FUSE system */
-#include "../teafs.h"
+#include "../devfs.h"
 #include <fuse.h>
 #include <fuse/fuse_opt.h>
 /* *********** */

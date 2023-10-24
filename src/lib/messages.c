@@ -20,7 +20,7 @@
 
 #include <stdio.h>
 
-#include "../teafs.h"
+#include "../devfs.h"
 #include "messages.h"
 
 static char *msg_program_name = NULL;
