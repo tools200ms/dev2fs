@@ -24,7 +24,6 @@
 #include <dirent.h>
 
 #include "map.h"
-#include "../lib/radixTrie.h"
 
 
 struct file_handler
@@ -37,8 +36,6 @@ struct dir_handler
 	DIR *dir_ptr;
 };
 
-
-void engine_setup( RadixTrieNode *tags_set, MapNode *map_blank_node );
 
 MapNode *engine_findNode( char *path_pos );
 MapNode *engine_findNodeAndExtractFileName( char *path_pos, char **file_name );

@@ -25,20 +25,16 @@
 #include "loader.h"
 
 #include "../lib/stringBuffer.h"
-#include "../lib/radixTrie.h"
 
 #include "../lib/tags.h"
 
 #include "../core/map.h"
-#include "../core/resources.h"
 
 
 struct mapper
 {
 	//TagList *tags_list;
 	
-	RadixTrieNode *tags_set;
-	ResourceMap *res_map;
 	MapNode *map_blank_node;
 	
 	StringBuffer *str_buff;

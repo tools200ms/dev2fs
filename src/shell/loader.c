@@ -51,39 +51,57 @@ void load_init( const struct config *conf, struct loader *load )
 {
 	//memset( &engi_data, 0, sizeof (struct engine_data) );
 
-	struct stat source_dir_statbuf, mountpoint_dir_statbuf;
+	struct stat str_dir_statbuf, mnt_dir_statbuf;
 	//unsigned int source_dir_fd;
 
-		loadDirectoryTest( 	conf->data.source_dir_path, 
-									"source directory",
-									&source_dir_statbuf );
-	
-		loadDirectoryTest(	conf->data.mount_point_path, 
-									"mount point", 
-									&mountpoint_dir_statbuf	);
+	if( lstat( conf->data.mount_point_path, &mnt_dir_statbuf ) != 0 )
+	{
+		MSG_DEBUG( "errno source", "%d", errno );
+
+		perror( msg_getProgramName() );
+		MSG_ERROR_AND_EXIT( "Failed to open mount point, resource might be mounted already" );
+	}
+
+	if( !S_ISDIR( mnt_dir_statbuf.st_mode ) )
+	{
+		MSG_ERROR_AND_EXIT( "Mount point must be a directory" );
+	}
+
+	// multiple storages
+	if( lstat( conf->data.source_dir_path, &str_dir_statbuf ) != 0 )
+	{
+		MSG_DEBUG( "errno source", "%d", errno );
+
+		perror( msg_getProgramName() );
+		MSG_ERROR_AND_EXIT( "Failed to open " );
+	}
+
+	if( !S_ISDIR( str_dir_statbuf.st_mode ) )
+	{
+		MSG_ERROR_AND_EXIT( "File must be a directory" );
+	}
+
 
 	MSG_DEBUG( "source :", "%s", conf->data.source_dir_path );
 	
-	MSG_DEBUG( "DEV major", "%d", major( source_dir_statbuf.st_dev ) );
-	MSG_DEBUG( "DEV major", "%d", major( mountpoint_dir_statbuf.st_dev ) );
-	MSG_DEBUG( "ino", "%d", sizeof( source_dir_statbuf.st_ino ) );
+	MSG_DEBUG( "DEV major", "%d", major( str_dir_statbuf.st_dev ) );
+	MSG_DEBUG( "DEV major", "%d", major( mnt_dir_statbuf.st_dev ) );
+	MSG_DEBUG( "ino", "%d", sizeof( str_dir_statbuf.st_ino ) );
 	MSG_DEBUG( "ino", "%d", sizeof( long ) );
 
 	/**
 		check if source directory and mount point directory are not the same directory
 	*/
-	if( 	source_dir_statbuf.st_ino == 
-			mountpoint_dir_statbuf.st_ino )
+	if( 	str_dir_statbuf.st_ino ==
+			mnt_dir_statbuf.st_ino )
 	{
-		if( 	major( source_dir_statbuf.st_dev ) == 
-				major( mountpoint_dir_statbuf.st_dev ) 	)
-		{
-			if( 	minor( source_dir_statbuf.st_dev ) == 
-					minor( mountpoint_dir_statbuf.st_dev ) 	)
+		if( 	major( str_dir_statbuf.st_dev ) ==
+				major( mnt_dir_statbuf.st_dev ) &&
+				minor( str_dir_statbuf.st_dev ) ==
+				minor( mnt_dir_statbuf.st_dev ) 	)
 			{
 				MSG_ERROR_AND_EXIT( "source directory and mount point are the same!" );
 			}
-		}
 	}
 
 
@@ -91,32 +109,24 @@ void load_init( const struct config *conf, struct loader *load )
 		copy source dir path to loader's structure, next the unnesesary slash from 
 		the end of path will be erased
 	*/
+
+	load->str_uid = str_dir_statbuf.st_uid;
+	load->str_gid = str_dir_statbuf.st_gid;
+
+	load->mnt_uid = mnt_dir_statbuf.st_uid;
+	load->mnt_gid = mnt_dir_statbuf.st_gid;
+
+
 	char *source_dir_path = load->source_dir_path = strdup( conf->data.source_dir_path );
-
-	load->str_uid = source_dir_statbuf.st_uid;
-	load->str_gid = source_dir_statbuf.st_gid;
-
-	load->mnt_uid = mountpoint_dir_statbuf.st_uid;
-	load->mnt_gid = mountpoint_dir_statbuf.st_gid;
-
 	/**
 		cut slash symbols from the end of source directory path
 	*/
-	{
-		int len = strlen( source_dir_path ) - 1;
-		while( source_dir_path[ len ] == '/' )
-		{
-			source_dir_path[ len-- ] = '\0';
-			if( len == -1 )
-			{
-				// assert source dir is a root directory !!!!
-				break;
-			}
-		}
 
-		load->source_dir_path_length = len + 1;
+	char *hash_loc = strrchr(source_dir_path, '/');
+
+	if( hash_loc[1] == '\0' ) {
+		hash_loc[0] = '\0';
 	}
-
 
 	MSG_DEBUG_BR;
 }
@@ -127,25 +137,6 @@ void load_release()// struct loader *load )
 	//	free( load->source_dir_path );
 }
 
-
-
-void loadDirectoryTest( char *dir_name, char *purpose, struct stat *dir_statbuf )
-{
-//	struct stat *dir_statbuf = malloc( sizeof( struct stat) );
-
-	if( lstat( dir_name, dir_statbuf ) != 0 )
-	{
-		MSG_DEBUG( "errno source", "%d", errno );
-
-		perror( msg_getProgramName() );
-		MSG_ERROR_AND_EXIT( "Filed to open " );
-	}
-
-	if( !S_ISDIR( dir_statbuf->st_mode ) )
-	{
-		MSG_ERROR_AND_EXIT( "is not a directory" );
-	}
-}
 
 void loadedconf_print_summary(FILE* stream, struct config_data* conf_data, struct loader* load)
 {

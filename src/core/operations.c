@@ -51,16 +51,12 @@
 #include "../format/hlmapping.h"
 
 
-static ResourceMap *op_res_map;
 static StringBuffer *op_str_buff;
 
-static RadixTrieNode *op_tags_set;
 
 
-void operations_init( RadixTrieNode *tags_set, ResourceMap *res_map, StringBuffer *str_buff )
+void operations_init( StringBuffer *str_buff )
 {
-	op_tags_set = tags_set;
-	op_res_map = res_map;
 	op_str_buff = str_buff;
 }
 
@@ -193,21 +189,7 @@ int teaop_mkdir( 	const char 					*path,
 		MSG_DEBUG( "    tag", "%s", tag );
 		//search map
 
-		new_res_id = res_create( &NULL_ResID, tag );
-		
-		tmp_map_node = map_node;
-		while( (tmp_map_node = map_navigateSubAnyTag( tmp_map_node, &tmp_tag ) ) != NULL )
-		{
-			MSG_DEBUG( "     tmp_tag", "%s", tmp_tag );
-			new_res_id = res_create( res_id = new_res_id, tmp_tag );
-			free( res_id );
-			
-			if( new_res_id == NULL ) // not allowed two tags in path !
-				return -1;
-		}
-		
-		new_res_id = res_register( op_res_map, new_res_id, &common_map_node );
-		
+
 		if( *common_map_node == NULL )
 		{ // new resource
 			*common_map_node = map_newNode( map_node, tag );
@@ -216,31 +198,6 @@ int teaop_mkdir( 	const char 					*path,
 		{
 			map_attachNode( map_node, *common_map_node, tag );
 		}
-	}
-	else
-	{ // new resource and tag
-		ValueWrapper *val_wrapp;
-		//MSG_DEBUG( "    tag", "%s", tag );
-		
-		val_wrapp = rdxTrie_insert( op_tags_set, tag + 1 );
-		tag = val_wrapp->value_ptr = strdup( tag + 1 );
-		
-		new_res_id = res_create( &NULL_ResID, tag );
-		
-		tmp_map_node = map_node;
-		
-		while( (tmp_map_node = map_navigateSubAnyTag( tmp_map_node, &tmp_tag )) != NULL )
-		{
-			new_res_id = res_create( res_id = new_res_id, tmp_tag );
-			free( res_id );
-
-			if( new_res_id == NULL ) // not allowed two tags in path !
-				return -1;
-		}
-		
-		new_res_id = res_register( op_res_map, new_res_id, &common_map_node );
-		
-		*common_map_node = map_newNode( map_node, tag );
 	}
 
 	
@@ -267,24 +224,14 @@ int teaop_rmdir( const char *path )
 	
 	hlmapping_rmDir( context, op_str_buff );
 	
-	res_removeByMapNode( op_res_map, map_node );
-	
+
 	Tag **released_tags, **r_tags;
 	if( (released_tags = map_removeEmptyNode( map_node )) == NULL )
 	{
 		return -1;
 	}
 
-	for( r_tags = released_tags; *r_tags != NULL; ++r_tags )
-	{
-		MSG_DEBUG( 			"      tag", "%s", released_tags[0] );
-		if( !res_isTagUsed( op_res_map, *r_tags ) )
-		{
-			MSG_DEBUG( 			"      tag", "%s", *r_tags );
-			rdxTrie_remove( op_tags_set, *r_tags );
-			free( *r_tags );
-		}
-	}
+
 	
 	free( released_tags );
 

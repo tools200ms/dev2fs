@@ -21,10 +21,8 @@
 #ifndef _TEAFS_ORG_CORE_OPERATIONS_H_
 #define _TEAFS_ORG_CORE_OPERATIONS_H_
 
-#include "../lib/radixTrie.h"
 
-
-void operations_init( RadixTrieNode *tags_set, ResourceMap *res_map, StringBuffer *str_buff );
+void operations_init( StringBuffer *str_buff );
 
 /* teaFS initialize functions, defined in teafs.c */
 void *teafs_init( struct fuse_conn_info *conn );
@@ -106,9 +104,7 @@ int teaop_fgetattr(	const char 					*path,
 /* attributes modify operations */
 
 
-
 /* links read operations */
-
 
 
 /* links modify operations */

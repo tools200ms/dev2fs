@@ -84,7 +84,7 @@ static int setMaxLengthOfBuffPath( StringBuffer *buf, int relative_path_max_leng
 //char *strbuff_apply( StringBuffer *buf, char *str )
 char *strbuff_setFullPath( StringBuffer *buf, const char *relative_path )
 {
-	MSG_DEBUG("pb->relative_path_max_length", "%d", buf->relative_path_max_length);
+	MSG_DEBUG("relative_path: ", "%d", relative_path);
 	buf->relative_path_length = strlen( relative_path );
 
 	if( (buf->relative_path_length) > (buf->relative_path_max_length) )

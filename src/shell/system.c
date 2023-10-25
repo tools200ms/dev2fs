@@ -37,9 +37,9 @@
 
 
 void sys_init( 	const struct config *conf, 
-						const struct loader *load, 
-						const struct mapper *map, 
-						struct system *sys 			)
+				const struct loader *load,
+				const struct mapper *map,
+					struct system *sys 			)
 {
 	struct fuse_operations *operations = operations = 
 								malloc( sizeof (struct fuse_operations) );
@@ -93,8 +93,8 @@ void sys_init( 	const struct config *conf,
 	// assigns link modify operations
 
 
-	engine_setup( map->tags_set, map->map_blank_node );
-	operations_init( map->tags_set, map->res_map, map->str_buff );
+	//engine_setup( NULL, map->map_blank_node );
+	operations_init( map->str_buff );
 }
 
 void sys_release( struct system *sys )

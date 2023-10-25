@@ -24,7 +24,6 @@
 #include "../lib/tags.h"
 
 #include "../lib/list.h"
-#include "../lib/radixTrie.h"
 
 
 /**
@@ -63,12 +62,6 @@ _Container_1_____    _Container_2_____    _Container_3_____    _Container_4_____
 
 typedef struct map_node
 {
-	/**
-		references to the next and previous ('/' prefixed) containers (via NotTreeRef)
-	*/
-	RadixTrieNode *subTag_ref, *addTag_ref;
-//	ChunkedPatriciaTree		ref;
-
 	/**
 		redundant data to speedup some common queries
 	*/

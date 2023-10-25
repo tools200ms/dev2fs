@@ -21,13 +21,11 @@
 #ifndef _TEAFS_ORG_CORE_TAGS_H_
 #define _TEAFS_ORG_CORE_TAGS_H_
 
-#include "radixTrie.h"
-
 
 typedef char Tag;
 
 //void tags_
-void tags_print( FILE *stream, RadixTrieNode *tags_set );
+void tags_print( FILE *stream );
 
 
 #endif // _TEAFS_ORG_CORE_TAGS_H_

@@ -29,10 +29,9 @@ static void tags_print_tag( void *tag, void *args )
 	fprintf( (FILE *)args, "/%s/\n" , (char *)tag );
 }
 
-void tags_print( FILE *stream, RadixTrieNode *tags_set )
+void tags_print( FILE *stream )
 {
-	//int i;
 	fprintf( stream, MSG_TAGS_INFO );
 
-	rdxTrie_print( tags_set, tags_print_tag, stream );
+	//rdxTrie_print( tags_set, tags_print_tag, stream );
 }
