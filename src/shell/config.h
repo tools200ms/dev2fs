@@ -50,9 +50,8 @@
 
 typedef struct config_data
 {
-	/* notTree paths */
-	char 	*source_dir_path, 
-			*mount_point_path;
+	char 	*mnt_dir, // mountpoint path
+			*str_dir; // storage direcotory path
 
 	/** notTree options **/
 	char 	*notallowed_dir_name, 

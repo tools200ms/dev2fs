@@ -176,9 +176,8 @@ int teaop_mkdir( 	const char 					*path,
 	MSG_DEBUG_INFO( 	"=====> mkdir operation called" );
 	MSG_DEBUG( 			"      path", "%s", path );
 
-	ResID *res_id, *new_res_id;
-	Tag *tag, *tmp_tag;
-	MapNode *map_node, *tmp_map_node, **common_map_node;
+	Tag *tag;
+	MapNode *map_node, **common_map_node;
 	
 	if( (map_node = engine_findNodeForNewDirectory( (char *)path, &tag )) == NULL )
 		return -1;
@@ -255,7 +254,7 @@ int teaop_open(	const char 					*path,
 	struct file_handler *f_handler = malloc( sizeof (struct file_handler) );
 	//f_handler->fd = fd;
 
-	MSG_DEBUG( "fi->fh", "%llu", fi->fh );
+	MSG_DEBUG( "fi->fh", "%lu", fi->fh );
 	//fi->fh = 0;//(uint64_t)(f_handler);
 	//fi->fh = (long)f_handler;
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
@@ -286,12 +285,12 @@ int teaop_read(	const char 					*path,
 	MSG_DEBUG_INFO( 	"=====> read operation called" );
 	size_t read_bytes;
 
-	MSG_DEBUG( 			"      offset", "%d", offset );
-	MSG_DEBUG( 			"      size", "%d", size );
+	MSG_DEBUG( 			"      offset", "%d", (int)offset );
+	MSG_DEBUG( 			"      size", "%d", (int)size );
 
 	struct file_handler *f_handler;// = (struct file_handler *)(fi->fh);
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
-	MSG_DEBUG( "fi->fh", "%llu", fi->fh );
+	MSG_DEBUG( "fi->fh", "%lu", fi->fh );
 	MSG_DEBUG( "fd", "%d", f_handler->fd );
 
 	int fd = f_handler->fd;

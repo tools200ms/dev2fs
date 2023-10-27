@@ -35,37 +35,9 @@
 void scan_source_directory( char *source_dir_path, struct mapper *map );
 
 
-void mapp_init( const struct config *conf, const struct loader *load, struct mapper *map )
+void mapp_init( const struct loader *load, struct mapper *map )
 {
-	char *rel_path, *new_rel_path, *tag_str;
-
-	List 	*paths_list = init_list(),
-			*res_list = init_list(),
-			*map_nodes_list = init_list();
-	DIR *dir_ptr;
-
-	StrBuff_base_idx root_idx;
-	short int base_path;
-
-
-	struct dirent *dir_entry;
-	struct stat dir_stat;
-
-	StringBuffer *str_buff = strbuff_init( (*load).source_dir_path );
-
-	root_idx = strbuff_getBaseIdx( str_buff );
-
-	MSG_DEBUG("pb->path_buff", "%s", str_buff->path_buff );
-	MSG_DEBUG("pb->relative_path", "%s", str_buff->relative_path );
-	MSG_DEBUG("pb->relative_path_length", "%d", str_buff->relative_path_length );
-	MSG_DEBUG("pb->relative_path_max_length", "%d", str_buff->relative_path_max_length );
-
-	base_path = strbuff_resetRelativePath( str_buff );
-	MSG_DEBUG("pb->path_buff", "%s", str_buff->path_buff );
-	MSG_DEBUG("pb->relative_path", "%s", str_buff->relative_path );
-	MSG_DEBUG("pb->relative_path_length", "%d", str_buff->relative_path_length );
-	MSG_DEBUG("pb->relative_path_max_length", "%d", str_buff->relative_path_max_length );
-
+	map->str_buff = strbuff_init( load->str_path );
 
 }
 

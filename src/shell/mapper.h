@@ -33,14 +33,12 @@
 
 struct mapper
 {
-	//TagList *tags_list;
-	
 	MapNode *map_blank_node;
 	
 	StringBuffer *str_buff;
 };
 
-void mapp_init( const struct config *conf, const struct loader *load, struct mapper *map );
+void mapp_init( const struct loader *load, struct mapper *map );
 
 void map_release( struct mapper *map );
 

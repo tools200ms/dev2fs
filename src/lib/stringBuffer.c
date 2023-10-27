@@ -1,5 +1,5 @@
 /* stringBuffer.c --- Functions for character strings operations.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of TeaFS.
  * 
@@ -33,22 +33,22 @@ StringBuffer *strbuff_init( char *base_path )
 {
 	StringBuffer *buf = malloc( sizeof (StringBuffer) );
 
-	if( buf == NULL ) return NULL;
-
-	int base_len = strlen( base_path );
-	MSG_DEBUG_DEC( "base_len", base_len );
-	buf->relative_path_max_length = REL_PATH_BUFFSIZE;
-	buf->relative_path_length = 0;
-
-	if( 	(buf->path_buff = 
-					malloc( sizeof (char) * ( 	base_len + 
-														buf->relative_path_max_length + 1 ) ) ) 
-			== NULL )
+	if( buf == NULL )
 		return NULL;
 
-	strcpy( buf->path_buff, base_path );
-	
-	buf->relative_path = buf->path_buff + base_len;
+	// Initialise:
+	int base_len = strlen( base_path );
+
+	char *p_buf =
+		malloc( (sizeof (char)) * (base_len + REL_PATH_DEFAULT_BUFFSIZE + 1) );
+
+	if( (buf->p_buf = p_buf) == NULL )
+		return NULL;
+
+	buf->rp_buf_len = REL_PATH_DEFAULT_BUFFSIZE;
+
+	strcpy( p_buf, base_path );
+	buf->rp_buf_start = p_buf + base_len;
 	
 	return buf;
 }
@@ -56,134 +56,88 @@ StringBuffer *strbuff_init( char *base_path )
 void strbuff_destroy( StringBuffer *buf )
 {
 	//if( pb->path_buff != NULL )
-	free( buf->path_buff );
+	free( buf->p_buf );
 	free( buf );
 }
 
-// static int _strbuff_resize( StringBuffer *buf, int new_relative_path_max_length );
-static int setMaxLengthOfBuffPath( StringBuffer *buf, int relative_path_max_length )
+
+char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 {
-	MSG_DEBUG( "relative_path_max_length", "%d", relative_path_max_length );
-	
-	int base_len = buf->relative_path - buf->path_buff;
-	
-	buf->path_buff = realloc( 	buf->path_buff, 
-										sizeof (char) * ( base_len + 
-																relative_path_max_length + 1 ) );
-	
-	if( buf->path_buff == NULL ) return -1;
+	int rp_len = strlen( rel_path );
+	MSG_DEBUG( 			"     (old) base path", "%s", buf->p_buf );
+	MSG_DEBUG( 			"            rel len.", "%d", buf->rp_buf_len );
 
-	buf->relative_path = buf->path_buff + base_len;
-	buf->relative_path_max_length = relative_path_max_length;
+	if( buf->rp_buf_len < rp_len ) {
+		char *p_buf;
+		int base_len = buf->rp_buf_start - buf->p_buf,
+			new_rp_buf_len = rp_len + REL_PATH_BUFF_MARGIN;
 
-	MSG_DEBUG_DEC( "base_len + relative_path_max_length", base_len + relative_path_max_length );
+		(buf->rp_buf_start)[0] = '\0';
+		p_buf = malloc( (sizeof (char)) * (new_rp_buf_len + 1) );
+		if(p_buf == NULL)
+			return NULL;
 
-	return 0;
-}
+		strcpy(p_buf, buf->p_buf);
+		free(buf->p_buf);
+		buf->p_buf = p_buf;
+		buf->rp_buf_start = buf->p_buf + base_len;
+		buf->rp_buf_len = new_rp_buf_len;
 
-//char *strbuff_apply( StringBuffer *buf, char *str )
-char *strbuff_setFullPath( StringBuffer *buf, const char *relative_path )
-{
-	MSG_DEBUG("relative_path: ", "%d", relative_path);
-	buf->relative_path_length = strlen( relative_path );
-
-	if( (buf->relative_path_length) > (buf->relative_path_max_length) )
-	{
-		setMaxLengthOfBuffPath( buf, buf->relative_path_length );
-		//relative_path_max_length = strlen( relative_path );
+		MSG_DEBUG( 			"   (changed) rel len.", "%d", buf->rp_buf_len );
 	}
-	
-	strcpy( buf->relative_path, relative_path );
-	
-	return buf->path_buff;
+
+	strcpy(buf->rp_buf_start, rel_path);
+
+	MSG_DEBUG( 			"     (new) base path", "%s", buf->p_buf );
+
+	return buf->p_buf;
 }
 
 //char *strbuff_add( StringBuffer *buf, char *str )
 char *strbuff_addPostfix( StringBuffer *buf, const char *str )
 {
-	int str_len = strlen( str );
-	
-	if( ((buf->relative_path_length) + str_len) > (buf->relative_path_max_length) )
-	{
-		setMaxLengthOfBuffPath( buf, (buf->relative_path_length) + str_len );
-		//relative_path_max_length = strlen( relative_path );
-	}
-	
-	(buf->relative_path_length) += str_len;
-	
-	strcat( buf->relative_path, str );
-	
-	return buf->path_buff;
+
+	return NULL;
 }
 
 StrBuff_base_idx strbuff_getBaseIdx( StringBuffer *buf )
 {
-	return buf->relative_path - buf->path_buff;
+	return 9;
 }
 
 
 // StrBuff_base_idx strbuff_setToBase( StringBuffer *buf )
 StrBuff_base_idx strbuff_resetRelativePath( StringBuffer *buf )
 {
-	int rel_len = strlen( buf->relative_path );
 
-	(buf->relative_path_length) = 0;
-	(buf->relative_path) += rel_len;
-	(buf->relative_path_max_length) -= rel_len;
-
-	return buf->relative_path - buf->path_buff;
+	return 0;
 }
 
 // void strbuff_alterBase( StringBuffer *buf, StrBuff_base_idx relative_idx )
 void strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx )
 {
-	char *new_relative_path = buf->path_buff + relative_idx;
-	int rel_path_diff = (buf->relative_path) - new_relative_path;
 
-//	MSG_DEBUG("pb->relative_path", "%d", pb->relative_path );
-//	MSG_DEBUG("new_relative_path", "%d", new_relative_path );
-//	MSG_DEBUG("relative_idx", "%d", relative_idx );
-
-	(buf->relative_path) = new_relative_path;
-
-	(buf->relative_path_length) -= rel_path_diff;
-	(buf->relative_path_max_length) += rel_path_diff;
 }
 
 // inline char *strbuff_getStrStartingFromIdx( struct path_buffer *pb, StrBuff_base_idx start_from )
 char *strbuff_getPathWithBase( struct path_buffer *pb, StrBuff_base_idx start_from )
 {
-	return pb->path_buff + start_from;
+	return 0;
 }
 
 char *strbuff_getRelativeStr( StringBuffer *buf )
 {
-	return buf->relative_path;
+	return 0;
 }
 
 // void strbuff_setNewBase( StringBuffer *buf, char *new_base_path )
 void setNewBase( StringBuffer *buf, char *new_base_path )
 {
-	int 	new_base_path_len = strlen( new_base_path ), 
-			base_len = (buf->relative_path - buf->path_buff), 
-			base_path_len_diff = new_base_path_len - base_len;
-	
-	if( buf->relative_path_max_length < base_path_len_diff )
-		setMaxLengthOfBuffPath( buf, base_path_len_diff );
-	
-	strcpy( buf->path_buff, new_base_path );
-	buf->relative_path = (buf->path_buff) + new_base_path_len;
-	buf->relative_path_max_length -= base_path_len_diff;
+
 }
 
 void strbuff_printBase( StringBuffer *buf, FILE *stream )
 {
-	char tmp_c = *(buf->relative_path);
-	*(buf->relative_path) = '\0';
 
-	fprintf( stream, "%s\n", buf->path_buff );
-	//fputc( '\0', stream );
-	
-	*(buf->relative_path) = tmp_c;
 }
 

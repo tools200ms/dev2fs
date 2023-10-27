@@ -23,8 +23,8 @@
 
 struct loader
 {
-	char *source_dir_path;
-	int source_dir_path_length;
+	char *mnt_path, *str_path;
+	int str_dir_path_length;
 
 	uid_t str_uid, mnt_uid;
 	gid_t str_gid, mnt_gid;
@@ -34,7 +34,7 @@ struct loader
 /**
 	validates cunfiguration and loads it to engine's structure
 */
-void load_init( const struct config *conf, struct loader *load );
+void load_init( struct config *conf, struct loader *load );
 
 /**
 	releases engine's structure

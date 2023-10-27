@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
 	memset( d2_ref.map, 0, sizeof (struct mapper) );
 
 	//MSG_VERBOSE( "Checking source directory" );
-	mapp_init( d2_ref.conf, d2_ref.load, d2_ref.map );
+	mapp_init( d2_ref.load, d2_ref.map );
 
 	MSG_VERBOSE( "DATA SOURCE: OK, source directory tagged and mapped" );
 
@@ -128,7 +128,7 @@ int main( int argc, char *argv[] )
 	sys_init( d2_ref.conf, d2_ref.load, d2_ref.map, d2_ref.sys );
 
 
-	MSG_VERBOSE( "TEAFS: Starting FUSE" );
+	MSG_VERBOSE( "DEV2FS: Starting FUSE" );
 	ret_val = fuse_main( 	(*((*(d2_ref.conf)).fuse_arguments)).argc,
 									(*((*(d2_ref.conf)).fuse_arguments)).argv,
 									(d2_ref.sys)->operations,

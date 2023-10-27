@@ -1,5 +1,5 @@
 /* devfs.h --- Basic definitions for TeaFS.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of TeaFS.
  * 

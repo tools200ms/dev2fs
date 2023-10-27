@@ -1,5 +1,5 @@
 /* stringBuffer.h --- Header file for stringBuffer.c.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of TeaFS.
  * 
@@ -17,16 +17,17 @@
  * along with TeaFS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_
+#define _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_
 
-#ifndef _TEAFS_ORG_LIB_STRING_BUFFER_H_
-#define _TEAFS_ORG_LIB_STRING_BUFFER_H_
-
-#define REL_PATH_BUFFSIZE 0
+#define REL_PATH_MAX_BUFFSIZE 4000
+#define REL_PATH_DEFAULT_BUFFSIZE 0
+#define REL_PATH_BUFF_MARGIN 0
 
 typedef struct path_buffer
 {
-	char *path_buff, *relative_path;
-	short int relative_path_length, relative_path_max_length;
+	char *p_buf, *rp_buf_start;
+	short int rp_buf_len;
 }
 StringBuffer;
 
@@ -34,7 +35,7 @@ typedef short int StrBuff_base_idx;
 
 StringBuffer * strbuff_init( char *base_path );
 
-void 				strbuff_destroy( StringBuffer *buf );
+void 		strbuff_destroy( StringBuffer *buf );
 
 //char *			getFullPath( StringBuffer *buf, char *relative_path );
 
@@ -45,14 +46,14 @@ char *			strbuff_addPostfix( StringBuffer *buf, const char *postfix );
 
 
 StrBuff_base_idx strbuff_getBaseIdx( StringBuffer *buf );
-StrBuff_base_idx 	strbuff_resetRelativePath( StringBuffer *buf );
-void 					strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx );
+StrBuff_base_idx strbuff_resetRelativePath( StringBuffer *buf );
+void 			 strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx );
 
-char *	strbuff_getPathWithBase( StringBuffer *buf, StrBuff_base_idx start_from );
-char *strbuff_getRelativeStr( StringBuffer *buf );
+char * strbuff_getPathWithBase( StringBuffer *buf, StrBuff_base_idx start_from );
+char * strbuff_getRelativeStr( StringBuffer *buf );
 
-void 				setNewBase( StringBuffer *buf, char *new_base_path );
+void 	setNewBase( StringBuffer *buf, char *new_base_path );
 
 void 	strbuff_printBase( StringBuffer *buf, FILE *stream );
 
-#endif // _TEAFS_ORG_LIB_STRING_BUFFER_H_
+#endif // _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_

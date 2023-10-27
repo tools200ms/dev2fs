@@ -81,8 +81,8 @@ static int conf_parser_program_abort_cause;
 */
 static int confPostValidationErrors( struct config_data *conf_data )
 {
-	return 	conf_data->source_dir_path  == NULL || 
-				conf_data->mount_point_path == NULL;
+	return 	conf_data->str_dir  == NULL ||
+			conf_data->mnt_dir == NULL;
 }
 
 
@@ -173,11 +173,11 @@ Config *conf_init( int argc, char *argv[] )
 
 void conf_destroy( struct config *conf )
 {
-	if( conf->data.source_dir_path != NULL )
-		free( conf->data.source_dir_path );
+	if( conf->data.str_dir != NULL )
+		free( conf->data.str_dir );
 
-	if( conf->data.mount_point_path != NULL )
-		free( conf->data.mount_point_path );
+	if( conf->data.mnt_dir != NULL )
+		free( conf->data.mnt_dir );
 
 	if( conf->fuse_arguments != NULL )
 		fuse_opt_free_args( conf->fuse_arguments );
@@ -208,15 +208,15 @@ static int dev2fs_options_proc( 	void *data,
 			MSG_DEBUG_BR;
 
 			
-			switch( 	((conf_data_ptr->source_dir_path  == NULL) ? 0 : 1) +
-						((conf_data_ptr->mount_point_path == NULL) ? 0 : 2) )
+			switch( 	((conf_data_ptr->str_dir == NULL) ? 0 : 1) +
+						((conf_data_ptr->mnt_dir == NULL) ? 0 : 2) )
 			{
 				case 0:	// source_dir_path & mount_point_path are NULLs
-					conf_data_ptr->source_dir_path = strdup( arg );
+					conf_data_ptr->str_dir = strdup( arg );
 				CONF_PARSE_DISCARD_FLAG;
 		
 				case 1:	// only mount_point_path is NULL
-					conf_data_ptr->mount_point_path = strdup( arg );
+					conf_data_ptr->mnt_dir = strdup( arg );
 				CONF_PARSE_KEEP_FLAG;
 		
 				case 3: // source_dir_path & mount_point_path are set

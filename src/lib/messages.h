@@ -29,6 +29,8 @@
 	definitions of debug macros, it can be enabled with -DDEBUG gcc option or 
 	make DEBUG=y
  */
+#define DEBUG "y"
+
 #ifdef DEBUG
 
 #define MSG_DEBUG_INFO( desc ) \

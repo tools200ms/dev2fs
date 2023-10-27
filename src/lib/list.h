@@ -1,5 +1,5 @@
 /* list.h --- Header file for list.c.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of TeaFS.
  * 
@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_LIB_LIST_H_
-#define _TEAFS_ORG_LIB_LIST_H_
+#ifndef _DEV2FS_200MS_NET__LIB_LIST_H_
+#define _DEV2FS_200MS_NET__LIB_LIST_H_
 
 /** minimum value is 2 (one pointer must be
 	 reserved for data, one to indicate next
@@ -39,11 +39,11 @@ typedef struct list
 List;
 
 List *	init_list();
-void 		destroy_list( List *list );
+void 	destroy_list( List *list );
 
 List *	list_write( List *list, void *el );
 void *	list_read( List *list );
 
-int 		list_isEmpty( List *list );
+int 	list_isEmpty( List *list );
 
-#endif // _TEAFS_ORG_LIB_LIST_H_
+#endif // _DEV2FS_200MS_NET__LIB_LIST_H_
