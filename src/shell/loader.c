@@ -139,10 +139,14 @@ void load_init( struct config *conf, struct loader *load )
 	MSG_DEBUG_BR;
 }
 
-void load_release()// struct loader *load )
+void load_release( struct loader *load )
 {
-	//if( load->source_dir_path != NULL )
-	//	free( load->source_dir_path );
+	if( load->str_path != NULL )
+		free( load->str_path );
+
+	free( load->mnt_path );
+
+	free( load );
 }
 
 

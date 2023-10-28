@@ -72,30 +72,13 @@ int hlmapping_createFile( void *map_context, StringBuffer *str_buff,
 											int flags, mode_t mode, 
 											struct file_handler *f_handler )
 {
-
+	return 0;
 }
 
 int hlmapping_unlinkFile( void *map_context, StringBuffer *str_buff, const char *file_name )
 {
-	int i, ret_val = 0;
+	int ret_val = 0;
 
-	MSG_DEBUG( "\t=====> ", "%d", ((ResLocations *)map_context)->last_el );
-
-	for( i = 0; i != ((ResLocations *)map_context)->last_el; ++i )
-	{
-		strbuff_setFullPath( str_buff, ((ResLocations *)map_context)->paths[i] );
-		strbuff_addPostfix( str_buff, "/" );
-		strbuff_addPostfix( str_buff, file_name );
-		
-		MSG_DEBUG( "\t=====> ", "%s", strbuff_getPathWithBase( str_buff, 0 ) );
-		
-		if( unlink( strbuff_getPathWithBase( str_buff, 0 ) ) == -1 )
-		{
-			perror( msg_getProgramName() );
-			ret_val = -1;
-		}
-	}
-	
 	return ret_val;
 }
 

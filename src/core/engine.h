@@ -25,7 +25,6 @@
 
 #include "map.h"
 
-
 struct file_handler
 {
 	int fd;
@@ -35,11 +34,6 @@ struct dir_handler
 {
 	DIR *dir_ptr;
 };
-
-
-MapNode *engine_findNode( char *path_pos );
-MapNode *engine_findNodeAndExtractFileName( char *path_pos, char **file_name );
-MapNode *engine_findNodeForNewDirectory( char *path_pos, Tag **tag );
 
 
 #endif // _TEAFS_ORG_CORE_ENGINE_H_

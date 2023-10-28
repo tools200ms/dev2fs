@@ -26,34 +26,5 @@
 #include "../lib/messages.h"
 /* ***************** */
 
-#include "../lib/tags.h"
 #include "engine.h"
-
-static MapNode *op_map_blank_node;
-
-
-void engine_setup( MapNode *map_blank_node )
-{
-	op_map_blank_node = map_blank_node;
-}
-
-MapNode *engine_findNode( char *path_pos )
-{
-	MapNode *current_node = op_map_blank_node;
-
-
-	return current_node;
-}
-
-MapNode *engine_findNodeAndExtractFileName( char *path_pos, char **file_name )
-{
-
-	return NULL;
-}
-
-MapNode *engine_findNodeForNewDirectory( char *path_pos, Tag **tag )
-{
-
-	return NULL;
-}
 

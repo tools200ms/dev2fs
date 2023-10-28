@@ -79,6 +79,7 @@ int teaop_statfs( const char *path, struct statvfs *buf )
 	if( (ret_val = statvfs( full_path, buf )) == -1 )
 		perror( msg_getProgramName() );
 	
+
 	//relesePath( full_path );
 	
 	MSG_DEBUG_INFO( 	"-----> end of statfs" );
@@ -176,35 +177,12 @@ int teaop_mkdir( 	const char 					*path,
 	MSG_DEBUG_INFO( 	"=====> mkdir operation called" );
 	MSG_DEBUG( 			"      path", "%s", path );
 
-	Tag *tag;
-	MapNode *map_node, **common_map_node;
-	
-	if( (map_node = engine_findNodeForNewDirectory( (char *)path, &tag )) == NULL )
-		return -1;
-	
-	
-	if( *tag != '/' ) // tag exists
-	{
-		MSG_DEBUG( "    tag", "%s", tag );
-		//search map
+	int ret_val;
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-
-		if( *common_map_node == NULL )
-		{ // new resource
-			*common_map_node = map_newNode( map_node, tag );
-		}
-		else // merge with existing resource
-		{
-			map_attachNode( map_node, *common_map_node, tag );
-		}
-	}
-
+	ret_val = mkdir( full_path, S_IRWXU | S_IRWXG );
 	
-	hlmapping_mkDir( map_node, *common_map_node, tag, op_str_buff );
-	
-	// TODO - node binding
-	
-	return 0;
+	return ret_val;
 }
 
 int teaop_rmdir( const char *path )
@@ -212,30 +190,16 @@ int teaop_rmdir( const char *path )
 	MSG_DEBUG_INFO( 	"=====> rmdir operation called" );
 	MSG_DEBUG( 			"      path", "%s", path );
 
-	MapNode *map_node;
-	
-	if( (map_node = engine_findNode( (char *)path )) == NULL )
-	{
-		return -1;
+
+	int ret_val;
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
+
+	if( (ret_val = rmdir( full_path )) == -1 ) {
+			perror( msg_getProgramName() );
 	}
-	
-	void *context = map_getContext( map_node );
-	
-	hlmapping_rmDir( context, op_str_buff );
-	
-
-	Tag **released_tags, **r_tags;
-	if( (released_tags = map_removeEmptyNode( map_node )) == NULL )
-	{
-		return -1;
-	}
-
-
-	
-	free( released_tags );
 
 	MSG_DEBUG_INFO( 	"-----> end of rmdir" );
-	return 0;
+	return ret_val;
 }
 
 /* files read operations */
@@ -338,14 +302,15 @@ int teaop_create( 	const char 					*path,
 	MapNode *map_node;
 	char *file_name;
 
-	map_node = engine_findNodeAndExtractFileName( (char *)path, &file_name );
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	
 	struct file_handler *f_handler = malloc( sizeof (struct file_handler) );
-	
-	if( hlmapping_createFile( map_getContext( map_node ), op_str_buff, file_name, path, fi->flags, mode, f_handler ) != 0 )
+
+	if( (f_handler->fd = open( full_path, fi->flags, mode )) == -1 )
 	{
+		perror( msg_getProgramName() );
 		free( f_handler );
-		
+
 		return -1;
 	}
 	
@@ -428,16 +393,16 @@ int teaop_unlink( const char *path )
 	//char *full_path = updatePath( path );
 
 	int ret_val;
-	MapNode *map_node;
-	char *file_name;
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-	map_node = engine_findNodeAndExtractFileName( (char *)path, &file_name );
-
-	ret_val = hlmapping_unlinkFile( map_getContext( map_node ), op_str_buff, file_name );
+	if( (ret_val = unlink( full_path )) == -1 )
+	{
+		perror( msg_getProgramName() );
+	}
 
 	MSG_DEBUG_INFO( 	"-----> end of unlink" );
 	return ret_val;
-//	char *full_path = strbuff_setFullPath( op_str_buff, path );	
+
 	//relesePath( full_path );
 }
 
@@ -448,60 +413,25 @@ int teaop_rename( const char *src_path, const char *dest_path )
 	MSG_DEBUG( 			"      src_path", "%s", src_path );
 	MSG_DEBUG( 			"      dest_path", "%s", dest_path );
 	
-	MapNode *map_node;
-	char *src_file_name, *dest_file_name;
 	int ret_val;
 	size_t path_len;
 
-	if( (map_node = engine_findNodeAndExtractFileName( (char *)src_path, &src_file_name )) == NULL )
-	{
-		return -1;
-	}
-	
-	if( src_file_name != NULL )
-	{
-		path_len = src_file_name - src_path;
-	
-		if( strncmp( src_path, dest_path, path_len ) != 0 )
-			return -1;
-	
-		dest_file_name = (char *)(dest_path + path_len);
-	
-		if( strstr( dest_file_name, "/" ) != NULL )
-			return -1;
+	char *_src_full_path, *src_full_path, *dest_full_path;
 
-		ret_val = hlmapping_renameFile( map_getContext( map_node ), op_str_buff, src_file_name, dest_file_name );
-	}
-	else
-	{
-		int src_path_len, dest_path_len, path_len, tag_len;
-		char *src_tag;
+	_src_full_path = strbuff_setFullPath( op_str_buff, src_path );
 
-		src_path_len = strlen( src_path );
-		dest_path_len = strlen( dest_path );
-		
-		if( (src_tag = hlmapping_renameDirTest( map_node )) == NULL )
-			return -1;
-		
-		tag_len = strlen( src_tag );
-	
-		path_len = src_path_len - tag_len;
-	
-		if( strncmp( src_path, dest_path, path_len ) != 0 )
-			return -1;
-	
-		if( strstr( dest_path + path_len, "/" ) != NULL )
-			return -1;
-		
-		struct stat dir_stat;
-		lstat( src_path, &dir_stat );
-		
-		
-		if( teaop_rmdir( src_path ) != 0 )
-			return -1;
-		
-		ret_val = teaop_mkdir( dest_path, dir_stat.st_mode );
+	src_full_path = malloc( (sizeof (char)) * (strlen(_src_full_path) + 1) );
+
+	strcpy(src_full_path, _src_full_path);
+
+	dest_full_path = strbuff_setFullPath( op_str_buff, dest_path );
+
+	if( (ret_val = rename( src_full_path, dest_full_path )) == -1 )
+	{
+		perror( msg_getProgramName() );
 	}
+
+	free(src_full_path);
 
 	MSG_DEBUG_INFO( 	"-----> end of rename" );
 	return ret_val;
