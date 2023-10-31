@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_SHELL_MESSAGES_H_
-#define _TEAFS_ORG_SHELL_MESSAGES_H_
+#ifndef _DEV2FS_200MS_NET__LIB_MESSAGES_H_
+#define _DEV2FS_200MS_NET__LIB_MESSAGES_H_
 
 
 #include "messages_en.h"
@@ -128,4 +128,4 @@ void msgSetVerboseMode();
 #define MSG_ERROR_AND_EXIT( msg ) \
 			{fprintf( stderr, "%s: %s\n", "notTree", msg ); exit(1);}
 
-#endif // _TEAFS_ORG_SHELL_MESSAGES_H_
+#endif // _DEV2FS_200MS_NET__LIB_MESSAGES_H_

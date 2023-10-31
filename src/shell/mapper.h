@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_SHELL_MAPPER_H_
-#define _TEAFS_ORG_SHELL_MAPPER_H_
+#ifndef _DEV2FS_200MS_NET__SHELL_MAPPER_H_
+#define _DEV2FS_200MS_NET__SHELL_MAPPER_H_
 
 #include "config.h"
 #include "loader.h"
@@ -40,4 +40,4 @@ void mapp_init( const struct loader *load, struct mapper *map );
 
 void map_release( struct mapper *map );
 
-#endif // _TEAFS_ORG_SHELL_MAPPER_H_
+#endif // _DEV2FS_200MS_NET__SHELL_MAPPER_H_

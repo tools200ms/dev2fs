@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_SHELL_SYSTEM_H_
-#define _TEAFS_ORG_SHELL_SYSTEM_H_
+#ifndef _DEV2FS_200MS_NET__SHELL_SYSTEM_H_
+#define _DEV2FS_200MS_NET__SHELL_SYSTEM_H_
 
 
 struct system
@@ -38,4 +38,4 @@ void sys_init( 	const struct config *conf,
 void sys_release( struct system *sys );
 
 
-#endif // _TEAFS_ORG_SHELL_SYSTEM_H_
+#endif // _DEV2FS_200MS_NET__SHELL_SYSTEM_H_

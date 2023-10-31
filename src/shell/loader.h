@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_SHELL_LOADER_H_
-#define _TEAFS_ORG_SHELL_LOADER_H_
+#ifndef _DEV2FS_200MS_NET__SHELL_LOADER_H_
+#define _DEV2FS_200MS_NET__SHELL_LOADER_H_
 
 struct loader
 {
@@ -46,4 +46,4 @@ void load_release();// struct loader *load );
 */
 void loadedconf_print_summary( FILE *stream, struct config_data *conf_data, struct loader *load );
 
-#endif // _TEAFS_ORG_SHELL_LOADER_H_
+#endif // _DEV2FS_200MS_NET__SHELL_LOADER_H_

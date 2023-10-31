@@ -19,8 +19,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_CORE_RESOURCES_H_
-#define _TEAFS_ORG_CORE_RESOURCES_H_
+#ifndef _DEV2FS_200MS_NET__CORE_RESOURCES_H_
+#define _DEV2FS_200MS_NET__CORE_RESOURCES_H_
 
 #include "map.h"
 
@@ -57,4 +57,4 @@ ResourceMap;
 
 
 
-#endif // _TEAFS_ORG_CORE_RESOURCES_H_
+#endif // _DEV2FS_200MS_NET__CORE_RESOURCES_H_

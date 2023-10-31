@@ -48,45 +48,45 @@ void sys_init( 	const struct config *conf,
 	(*sys).operations = operations;
 
 	// assigns init and terminate functions - declared in operations.h,
-	//	defined in teafs.c
-	operations->init = teafs_init;
+	//	defined in dev2fs.c
+	operations->init = dev2fs_init;
 
 	// assigns file system statistics operations
-	operations->statfs		 = teaop_statfs;
+	operations->statfs		 = d2op_statfs;
 
 	// assigns directory read operations
 
-	operations->opendir		= teaop_opendir;
-	operations->readdir		= teaop_readdir;
-	operations->releasedir	= teaop_releasedir;
+	operations->opendir		= d2op_opendir;
+	operations->readdir		= d2op_readdir;
+	operations->releasedir	= d2op_releasedir;
 
 	// assigns directory modify operations
-	operations->mkdir			 = teaop_mkdir;
-	operations->rmdir			 = teaop_rmdir;
+	operations->mkdir			 = d2op_mkdir;
+	operations->rmdir			 = d2op_rmdir;
 
 	// assign file read operations
 
-	operations->open			 = teaop_open;
-	operations->read			 = teaop_read;
+	operations->open			 = d2op_open;
+	operations->read			 = d2op_read;
 
-	operations->release		 = teaop_release;
+	operations->release		 = d2op_release;
 
 	// assign file modify operations
 
-	operations->create		 = teaop_create;
-	operations->write			 = teaop_write;
+	operations->create		 = d2op_create;
+	operations->write			 = d2op_write;
 
-	operations->truncate		 = teaop_truncate;
-	operations->flush			 = teaop_flush;
-	operations->unlink		 = teaop_unlink;
+	operations->truncate		 = d2op_truncate;
+	operations->flush			 = d2op_flush;
+	operations->unlink		 = d2op_unlink;
 
 	// assigns file and directory modify operations
-	operations->rename		 = teaop_rename;
-	operations->chmod		 = teaop_chmod;
+	operations->rename		 = d2op_rename;
+	operations->chmod		 = d2op_chmod;
 
 	// assigns attribute read operations
-	operations->getattr		 = teaop_getattr;
-	operations->fgetattr	= teaop_fgetattr;
+	operations->getattr		 = d2op_getattr;
+	operations->fgetattr	= d2op_fgetattr;
 
 	// assigns attribute modify operations
 	// assigns link read operations

@@ -55,11 +55,11 @@ depend:
 	makedepend -Y. *.c core/*.c shell/*.c lib/*.c
 # DO NOT DELETE
 
-teafs.o: dev2fs.h lib/messages.h lib/messages_en.h shell/config.h
-teafs.o: lib/messages.h shell/loader.h shell/mapper.h shell/config.h
-teafs.o: shell/loader.h lib/stringBuffer.h
-teafs.o: core/map.h lib/list.h core/resources.h core/map.h
-teafs.o: shell/system.h
+dev2fs.o: dev2fs.h lib/messages.h lib/messages_en.h shell/config.h
+dev2fs.o: lib/messages.h shell/loader.h shell/mapper.h shell/config.h
+dev2fs.o: shell/loader.h lib/stringBuffer.h
+dev2fs.o: core/map.h lib/list.h core/resources.h core/map.h
+dev2fs.o: shell/system.h
 core/engine.o: lib/messages.h core/engine.h
 core/engine.o: core/map.h
 core/map.o: lib/messages.h core/map.h

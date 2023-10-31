@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_CORE_MAP_H_
-#define _TEAFS_ORG_CORE_MAP_H_
+#ifndef _DEV2FS_200MS_NET__CORE_MAP_H_
+#define _DEV2FS_200MS_NET__CORE_MAP_H_
 
 #include "../lib/list.h"
 
@@ -94,4 +94,4 @@ void map_destroy();
 
 
 
-#endif // _TEAFS_ORG_CORE_MAP_H_
+#endif // _DEV2FS_200MS_NET__CORE_MAP_H_

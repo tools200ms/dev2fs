@@ -71,7 +71,7 @@ void operations_init( const struct loader *load, StringBuffer *str_buff )
 /* File system statistics, 
 	function is forwarding fs call.
  */
-int teaop_statfs( const char *path, struct statvfs *buf )
+int d2op_statfs( const char *path, struct statvfs *buf )
 {
 	MSG_DEBUG( 		"=====> statfs operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
@@ -95,7 +95,7 @@ int teaop_statfs( const char *path, struct statvfs *buf )
 	function is forwarding fs call, fi->fh is set 
 	for readdir and releasedir operations.
  */
-int teaop_opendir( const char 					*path, 
+int d2op_opendir( const char 					*path, 
 							struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 		"=====> opendir operation called" );
@@ -125,7 +125,7 @@ int teaop_opendir( const char 					*path,
 	function is forwarding fs call, handler from fi->fh is used to 
 	read directory.
  */
-int teaop_readdir(	const char 					*path, 
+int d2op_readdir(	const char 					*path, 
 							void 					*buf,
 							fuse_fill_dir_t 		filler,
 							off_t 					offset,
@@ -152,7 +152,7 @@ int teaop_readdir(	const char 					*path,
 /* Directory releasedir operation, 
 	releases fi->fh handler.
  */
-int teaop_releasedir( 	const char 					*path, 
+int d2op_releasedir( 	const char 					*path, 
 						struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 		"=====> releasedir operation called" );
@@ -176,7 +176,7 @@ int teaop_releasedir( 	const char 					*path,
 /* Directory mkdir operation, 
 	creates directories in multiple locations if needed.
  */
-int teaop_mkdir( 	const char 					*path, 
+int d2op_mkdir( 	const char 					*path, 
 						mode_t 					mode 	)
 {
 	MSG_DEBUG( 	"=====> mkdir operation called" );
@@ -191,7 +191,7 @@ int teaop_mkdir( 	const char 					*path,
 	return ret_val;
 }
 
-int teaop_rmdir( const char *path )
+int d2op_rmdir( const char *path )
 {
 	MSG_DEBUG(		"=====> rmdir operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
@@ -210,7 +210,7 @@ int teaop_rmdir( const char *path )
 
 /* files read operations */
 
-int teaop_open(	const char 	*path,
+int d2op_open(	const char 	*path,
 						struct fuse_file_info 	*fi	)
 {
 	MSG_DEBUG( 	"=====> open operation called" );
@@ -242,7 +242,7 @@ int teaop_open(	const char 	*path,
 	return ret_val;
 }
 
-int teaop_read(	const char 					*path, 
+int d2op_read(	const char 					*path, 
 						char 				*buf,
 						size_t 						size, 
 						off_t 						offset, 
@@ -277,7 +277,7 @@ int teaop_read(	const char 					*path,
 	return read_bytes;
 }
 
-int teaop_release( 	const char 					*path, 
+int d2op_release( 	const char 					*path, 
 							struct fuse_file_info 	*fi	 )
 {
 	//char *full_path = updatePath( path );
@@ -298,7 +298,7 @@ int teaop_release( 	const char 					*path,
 
 /* file modify operations */
 
-int teaop_create( 	const char 					*path, 
+int d2op_create( 	const char 					*path, 
 							mode_t						 mode, 
 							struct fuse_file_info 	*fi 		)
 {
@@ -325,7 +325,7 @@ int teaop_create( 	const char 					*path,
 	return 0;
 }
 
-int teaop_write( 	const char 					*path, 
+int d2op_write( 	const char 					*path, 
 						const char 					*buf, 
 						size_t 						 size, 
 						off_t 						 offset, 
@@ -355,7 +355,7 @@ int teaop_write( 	const char 					*path,
 	return write_bytes;
 }
 
-int teaop_truncate( 	const char 				*path, 
+int d2op_truncate( 	const char 				*path, 
 							off_t						 length 	)
 {
 	MSG_DEBUG( 	"=====> truncate operation called" );
@@ -376,7 +376,7 @@ int teaop_truncate( 	const char 				*path,
 	return ret_val;
 }
 
-int teaop_flush( 	const char 					*path, 
+int d2op_flush( 	const char 					*path, 
 						struct fuse_file_info	*fi 		)
 {
 	MSG_DEBUG( 		"=====> flush operation called" );
@@ -392,7 +392,7 @@ int teaop_flush( 	const char 					*path,
 	return 0;
 }
 
-int teaop_unlink( const char *path )
+int d2op_unlink( const char *path )
 {
 	MSG_DEBUG( 	"=====> unlink operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
@@ -413,7 +413,7 @@ int teaop_unlink( const char *path )
 }
 
 /* files and directories modify operations */
-int teaop_rename( const char *src_path, const char *dest_path )
+int d2op_rename( const char *src_path, const char *dest_path )
 {
 	MSG_DEBUG( 	"=====> rename operation called" );
 	MSG_DEBUG_STR( 			"      src_path", src_path );
@@ -442,7 +442,7 @@ int teaop_rename( const char *src_path, const char *dest_path )
 	return ret_val;
 }
 
-int teaop_chmod( const char *path, mode_t mode )
+int d2op_chmod( const char *path, mode_t mode )
 {
 	MSG_DEBUG( 	"=====> chmod operation called" );
 	MSG_DEBUG_STR( 	"   path", path );
@@ -463,7 +463,7 @@ int teaop_chmod( const char *path, mode_t mode )
 
 /* attributes read operations */
 
-int teaop_getattr(	const char 	*path, 
+int d2op_getattr(	const char 	*path, 
 							struct stat *stbuf	)
 {
 	MSG_DEBUG( 	"=====> getattr operation called" );
@@ -491,7 +491,7 @@ int teaop_getattr(	const char 	*path,
 	return ret_val;
 }
 
-int teaop_fgetattr(	const char 			*path,
+int d2op_fgetattr(	const char 			*path,
 							struct stat *stbuf,
 							struct fuse_file_info	*fi	)
 {

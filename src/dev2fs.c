@@ -52,9 +52,9 @@ struct dev2fs_references
 }
 d2_ref;
 
-void *teafs_init( struct fuse_conn_info *conn )
+void *dev2fs_init( struct fuse_conn_info *conn )
 {
-	MSG_VERBOSE( "TEAFS: OK, up and running, awaiting fs calls" );
+	MSG_VERBOSE( "Dev2FS: OK, up and running, awaiting fs calls" );
 	return NULL;
 }
 

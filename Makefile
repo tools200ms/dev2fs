@@ -47,7 +47,6 @@ ifneq ($(shell [ -f ./release/${RELEASE_NAME}.tar.xz ] && echo 1),1)
 	tar -cvJf ./release/${RELEASE_NAME}.tar.xz --exclude-vcs-ignores --exclude-vcs . --transform s/^\./${RELEASE_NAME}/
 	@echo "New DevFS's release file created: ../${RELEASE_NAME}.tar.xz"
 endif
-
 	@echo -n "MD5 sum is: "
 	@md5sum ./release/${RELEASE_NAME}.tar.xz
 	#| separate -N 0

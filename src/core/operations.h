@@ -18,86 +18,86 @@
  */
 
 
-#ifndef _TEAFS_ORG_CORE_OPERATIONS_H_
-#define _TEAFS_ORG_CORE_OPERATIONS_H_
+#ifndef _DEV2FS_200MS_NET__CORE_OPERATIONS_H_
+#define _DEV2FS_200MS_NET__CORE_OPERATIONS_H_
 
 
 void operations_init( const struct loader *load, StringBuffer *str_buff );
 
 /* teaFS initialize functions, defined in teafs.c */
-void *teafs_init( struct fuse_conn_info *conn );
+void *dev2fs_init( struct fuse_conn_info *conn );
 
 /* file system statistics */
-int teaop_statfs( const char *path, struct statvfs *buf );
+int d2op_statfs( const char *path, struct statvfs *buf );
 
 /* directories read operations */
 
-int teaop_opendir( 	const char 				*path,
+int d2op_opendir( 	const char 				*path,
 					struct fuse_file_info 	*fi 		);
 
-int teaop_readdir(	const char 				*path,
+int d2op_readdir(	const char 				*path,
 					void 					*buf,
 					fuse_fill_dir_t 		filler,
 					off_t 					offset,
 					struct fuse_file_info 	*fi		);
 
-int teaop_releasedir( 	const char 				*path,
+int d2op_releasedir( 	const char 				*path,
 						struct fuse_file_info 	*fi );
 
 /* directories modify operations */
 
-int teaop_mkdir( 		const char 				*path,
+int d2op_mkdir( 		const char 				*path,
 						mode_t 					 mode );
 
-int teaop_rmdir(		const char	*path );
+int d2op_rmdir(		const char	*path );
 
 /* files read operations */
 
-int teaop_open(		const char 				*path,
+int d2op_open(		const char 				*path,
 					struct fuse_file_info 	*fi		);
 
-int teaop_read(		const char 				*path,
+int d2op_read(		const char 				*path,
 					char 					*buf,
 					size_t 					size,
 					off_t 					offset,
 					struct fuse_file_info 	*fi		);
 
-int teaop_release( 	const char 				*path,
+int d2op_release( 	const char 				*path,
 					struct fuse_file_info 	*fi	);
 
 /* files modify operations */
 
-int teaop_create( 	const char 					*path, 
+int d2op_create( 	const char 					*path, 
 					mode_t						 mode,
 					struct fuse_file_info 	*fi );
 
-int teaop_write( 		const char 					*path, 
+int d2op_write( 		const char 					*path, 
 							const char 					*buf, 
 							size_t 						 size, 
 							off_t 						 offset, 
 							struct fuse_file_info	*fi 		);
 
-int teaop_truncate( 	const char 				*path, 
+int d2op_truncate( 	const char 				*path, 
 							off_t						 length 	);
 
-int teaop_flush( 		const char 					*path, 
+int d2op_flush( 		const char 					*path, 
 							struct fuse_file_info	*fi 		);
 
-int teaop_unlink(		const char *path 						);
+int d2op_unlink(		const char *path 						);
 
 /* files and directories modify operations */
-int teaop_rename( 	const char 					*src_path, 
+int d2op_rename( 	const char 					*src_path, 
 							const char 					*dest_path 	);
 
-int teaop_chmod(		const char 					*path, 
+int d2op_chmod(		const char 					*path, 
 							mode_t						 mode		);
 
 /* attributes read operations */
 
-int teaop_getattr(	const char 					*path, 
+int d2op_getattr(	const char 					*path, 
 							struct stat 				*stbuf	);
 
-int teaop_fgetattr(	const char 					*path, 
+int d2op_fgetattr(	const char 					*path, 
 							struct stat 				*stbuf, 
 							struct fuse_file_info	*fi	);
 
@@ -109,4 +109,4 @@ int teaop_fgetattr(	const char 					*path,
 
 /* links modify operations */
 
-#endif // _TEAFS_ORG_CORE_OPERATIONS_H_
+#endif // _DEV2FS_200MS_NET__CORE_OPERATIONS_H_

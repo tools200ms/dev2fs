@@ -18,8 +18,8 @@
  */
 
 
-#ifndef _TEAFS_ORG_CORE_ENGINE_H_
-#define _TEAFS_ORG_CORE_ENGINE_H_
+#ifndef _DEV2FS_200MS_NET__CORE_ENGINE_H_
+#define _DEV2FS_200MS_NET__CORE_ENGINE_H_
 
 #include <dirent.h>
 
@@ -36,4 +36,4 @@ struct dir_handler
 };
 
 
-#endif // _TEAFS_ORG_CORE_ENGINE_H_
+#endif // _DEV2FS_200MS_NET__CORE_ENGINE_H_
