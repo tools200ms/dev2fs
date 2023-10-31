@@ -4,6 +4,7 @@
 *.so
 build/*
 release/*
+test/data/*
 
 # Development IDEs:
 .kdev4/*

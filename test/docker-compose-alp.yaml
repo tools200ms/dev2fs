@@ -11,7 +11,7 @@ services:
     volumes: 
       - ../src:/home/proj/src
       - ../Makefile:/home/proj/Makefile
-      - ../test/str:/d2str
-      - ../test/submnt1:/d2strsubmnt1
-      - ../test/submnt2:/d2strsubmnt2
+      - ./data/str:/d2str
+      - ./data/submnt1:/d2strsubmnt1
+      - ./data/submnt2:/d2strsubmnt2
     entrypoint: ["/usr/bin/tail", "-f", "/dev/stderr"]
