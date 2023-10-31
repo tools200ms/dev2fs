@@ -26,8 +26,6 @@
 
 #include "../lib/stringBuffer.h"
 
-#include "../lib/tags.h"
-
 #include "../core/map.h"
 
 

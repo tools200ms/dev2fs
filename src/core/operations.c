@@ -42,21 +42,26 @@
 #include <string.h>
 #include "../shell/mapper.h"
 
-#include "../lib/tags.h"
 #include "resources.h"
 
 #include "engine.h"
 #include "operations.h"
 
-#include "../format/hlmapping.h"
-
 
 static StringBuffer *op_str_buff;
+const struct loader *op_load;
 
+uid_t buf_str_uid, buf_mnt_uid;
+gid_t buf_str_gid, buf_mnt_gid;
 
-
-void operations_init( StringBuffer *str_buff )
+void operations_init( const struct loader *load, StringBuffer *str_buff )
 {
+	op_load = load;
+	buf_str_uid = load->str_uid;
+	buf_mnt_uid = load->mnt_uid;
+	buf_str_gid = load->str_gid;
+	buf_mnt_gid = load->mnt_gid;
+
 	op_str_buff = str_buff;
 }
 
@@ -68,8 +73,8 @@ void operations_init( StringBuffer *str_buff )
  */
 int teaop_statfs( const char *path, struct statvfs *buf )
 {
-	MSG_DEBUG_INFO( 	"=====> statfs operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> statfs operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 	
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	
@@ -82,7 +87,7 @@ int teaop_statfs( const char *path, struct statvfs *buf )
 
 	//relesePath( full_path );
 	
-	MSG_DEBUG_INFO( 	"-----> end of statfs" );
+	MSG_DEBUG( 	"-----> end of statfs" );
 	return ret_val;
 }
 
@@ -93,8 +98,8 @@ int teaop_statfs( const char *path, struct statvfs *buf )
 int teaop_opendir( const char 					*path, 
 							struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG_INFO( 	"=====> opendir operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> opendir operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 	
 	/*******************************************************/
 	/*******************************************************/
@@ -112,7 +117,7 @@ int teaop_opendir( const char 					*path,
 
 	memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
 	
-	MSG_DEBUG_INFO( 	"-----> end of opendir" );
+	MSG_DEBUG( 	"-----> end of opendir" );
 	return 0;
 }
 
@@ -126,8 +131,8 @@ int teaop_readdir(	const char 					*path,
 							off_t 					offset,
 							struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG_INFO( 	"=====> readdir operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> readdir operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 
 	struct dir_handler *d_handler;
 	struct dirent *dir_entry;
@@ -139,7 +144,7 @@ int teaop_readdir(	const char 					*path,
 		filler( buf, dir_entry->d_name, NULL, 0 );
 	}
 
-	MSG_DEBUG_INFO( 	"-----> end of readdir" );
+	MSG_DEBUG( 	"-----> end of readdir" );
 
 	return 0;
 }
@@ -150,8 +155,8 @@ int teaop_readdir(	const char 					*path,
 int teaop_releasedir( 	const char 					*path, 
 						struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG_INFO( 	"=====> releasedir operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> releasedir operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 
 	struct dir_handler *d_handler;
 	
@@ -161,7 +166,7 @@ int teaop_releasedir( 	const char 					*path,
 	
 	free( d_handler );
 	
-	MSG_DEBUG_INFO( 	"-----> end of releasedir" );
+	MSG_DEBUG( 	"-----> end of releasedir" );
 	
 	return 0;
 }
@@ -172,23 +177,24 @@ int teaop_releasedir( 	const char 					*path,
 	creates directories in multiple locations if needed.
  */
 int teaop_mkdir( 	const char 					*path, 
-						mode_t 						 mode 	)
+						mode_t 					mode 	)
 {
-	MSG_DEBUG_INFO( 	"=====> mkdir operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 	"=====> mkdir operation called" );
+	MSG_DEBUG_STR( 			"      path", path );
 
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-	ret_val = mkdir( full_path, S_IRWXU | S_IRWXG );
+	ret_val = mkdir( full_path, mode );
+	chown( full_path, buf_str_uid, buf_str_gid );
 	
 	return ret_val;
 }
 
 int teaop_rmdir( const char *path )
 {
-	MSG_DEBUG_INFO( 	"=====> rmdir operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG(		"=====> rmdir operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 
 
 	int ret_val;
@@ -198,17 +204,17 @@ int teaop_rmdir( const char *path )
 			perror( msg_getProgramName() );
 	}
 
-	MSG_DEBUG_INFO( 	"-----> end of rmdir" );
+	MSG_DEBUG( 	"-----> end of rmdir" );
 	return ret_val;
 }
 
 /* files read operations */
 
-int teaop_open(	const char 					*path, 
+int teaop_open(	const char 	*path,
 						struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG_INFO( 	"=====> open operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 	"=====> open operation called" );
+	MSG_DEBUG_STR( 			"      path", path );
 
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -218,7 +224,7 @@ int teaop_open(	const char 					*path,
 	struct file_handler *f_handler = malloc( sizeof (struct file_handler) );
 	//f_handler->fd = fd;
 
-	MSG_DEBUG( "fi->fh", "%lu", fi->fh );
+	MSG_DEBUG_( "fi->fh", "%lu", fi->fh );
 	//fi->fh = 0;//(uint64_t)(f_handler);
 	//fi->fh = (long)f_handler;
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
@@ -232,30 +238,30 @@ int teaop_open(	const char 					*path,
 
 	//relesePath( full_path );
 
-	MSG_DEBUG_INFO( 	"-----> end of open" );
+	MSG_DEBUG( 	"-----> end of open" );
 	return ret_val;
 }
 
 int teaop_read(	const char 					*path, 
-						char 							*buf, 
+						char 				*buf,
 						size_t 						size, 
 						off_t 						offset, 
 						struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG_INFO( 	"=====> read operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> read operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 
 
-	MSG_DEBUG_INFO( 	"=====> read operation called" );
+	MSG_DEBUG( 	"=====> read operation called" );
 	size_t read_bytes;
 
-	MSG_DEBUG( 			"      offset", "%d", (int)offset );
-	MSG_DEBUG( 			"      size", "%d", (int)size );
+	MSG_DEBUG_( "      offset", "%d", (int)offset );
+	MSG_DEBUG_( "      size", "%d", (int)size );
 
 	struct file_handler *f_handler;// = (struct file_handler *)(fi->fh);
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
-	MSG_DEBUG( "fi->fh", "%lu", fi->fh );
-	MSG_DEBUG( "fd", "%d", f_handler->fd );
+	MSG_DEBUG_( "fi->fh", "%lu", fi->fh );
+	MSG_DEBUG_( "fd", "%d", f_handler->fd );
 
 	int fd = f_handler->fd;
 
@@ -265,9 +271,9 @@ int teaop_read(	const char 					*path,
 		//return 0;
 	}
 
-	MSG_DEBUG( 			"      read_bytes", "%d", read_bytes );
+	MSG_DEBUG_( "      read_bytes", "%lu", read_bytes );
 
-	MSG_DEBUG_INFO( 	"-----> end of read" );
+	MSG_DEBUG( 	"-----> end of read" );
 	return read_bytes;
 }
 
@@ -275,8 +281,8 @@ int teaop_release( 	const char 					*path,
 							struct fuse_file_info 	*fi	 )
 {
 	//char *full_path = updatePath( path );
-	MSG_DEBUG_INFO( 	"=====> release operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> release operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 	//relesePath( full_path );
 
 	struct file_handler *f_handler; // = (struct file_handler *)(fi->fh);
@@ -286,7 +292,7 @@ int teaop_release( 	const char 					*path,
 	close( f_handler->fd );
 	free( f_handler );
 
-	MSG_DEBUG_INFO( 	"-----> end of release" );
+	MSG_DEBUG( 	"-----> end of release" );
 	return 0; // ignored by FUSE
 }
 
@@ -296,11 +302,8 @@ int teaop_create( 	const char 					*path,
 							mode_t						 mode, 
 							struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG_INFO( 	"=====> create operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
-
-	MapNode *map_node;
-	char *file_name;
+	MSG_DEBUG( 	"=====> create operation called" );
+	MSG_DEBUG_STR( 		"      path", path );
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	
@@ -313,10 +316,12 @@ int teaop_create( 	const char 					*path,
 
 		return -1;
 	}
+
+	chown( full_path, buf_str_uid, buf_str_gid );
 	
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
 	
-	MSG_DEBUG_INFO( 	"-----> end of create" );
+	MSG_DEBUG( 	"-----> end of create" );
 	return 0;
 }
 
@@ -326,8 +331,8 @@ int teaop_write( 	const char 					*path,
 						off_t 						 offset, 
 						struct fuse_file_info	*fi 		)
 {
-	MSG_DEBUG_INFO( 	"=====> write operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 	"=====> write operation called" );
+	MSG_DEBUG_STR( 		"      path", path );
 
 	size_t write_bytes;
 	struct file_handler *f_handler;
@@ -335,26 +340,26 @@ int teaop_write( 	const char 					*path,
 
 	//int fd = f_handler->fd;
 
-	MSG_DEBUG( 			"      size", "%d", size );
-	MSG_DEBUG( 			"      offset", "%d", offset );
-	MSG_DEBUG( "    FD", "%d", f_handler->fd );
+	MSG_DEBUG_( "      size", "%lu", size );
+	MSG_DEBUG_( "      offset", "%lu", offset );
+	MSG_DEBUG_( "    FD", "%d", f_handler->fd );
 
 	if( (write_bytes = pwrite( f_handler->fd, buf, size, offset )) == -1 )
 	{
 		perror( msg_getProgramName() );
 	}
 
-	MSG_DEBUG( 			"      write_bytes", "%d", write_bytes );
+	MSG_DEBUG_( 			"      write_bytes", "%lu", write_bytes );
 
-	MSG_DEBUG_INFO( 	"-----> end of write" );
+	MSG_DEBUG( 	"-----> end of write" );
 	return write_bytes;
 }
 
 int teaop_truncate( 	const char 				*path, 
 							off_t						 length 	)
 {
-	MSG_DEBUG_INFO( 	"=====> truncate operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 	"=====> truncate operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 	
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -367,29 +372,30 @@ int teaop_truncate( 	const char 				*path,
 
 	//relesePath( full_path );
 	
-	MSG_DEBUG_INFO( 	"-----> end of truncate" );
+	MSG_DEBUG( 	"-----> end of truncate" );
 	return ret_val;
 }
 
 int teaop_flush( 	const char 					*path, 
 						struct fuse_file_info	*fi 		)
 {
-	MSG_DEBUG_INFO( 	"=====> flush operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 		"=====> flush operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 
 	//struct file_handler *f_handler;
 	//memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
 
+	//flush
 
 
-	MSG_DEBUG_INFO( 	"-----> end of flush" );
+	MSG_DEBUG( 	"-----> end of flush" );
 	return 0;
 }
 
 int teaop_unlink( const char *path )
 {
-	MSG_DEBUG_INFO( 	"=====> unlink operation called" );
-	MSG_DEBUG( 			"      path", "%s", path );
+	MSG_DEBUG( 	"=====> unlink operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
 	//char *full_path = updatePath( path );
 
 	int ret_val;
@@ -400,7 +406,7 @@ int teaop_unlink( const char *path )
 		perror( msg_getProgramName() );
 	}
 
-	MSG_DEBUG_INFO( 	"-----> end of unlink" );
+	MSG_DEBUG( 	"-----> end of unlink" );
 	return ret_val;
 
 	//relesePath( full_path );
@@ -409,12 +415,11 @@ int teaop_unlink( const char *path )
 /* files and directories modify operations */
 int teaop_rename( const char *src_path, const char *dest_path )
 {
-	MSG_DEBUG_INFO( 	"=====> rename operation called" );
-	MSG_DEBUG( 			"      src_path", "%s", src_path );
-	MSG_DEBUG( 			"      dest_path", "%s", dest_path );
+	MSG_DEBUG( 	"=====> rename operation called" );
+	MSG_DEBUG_STR( 			"      src_path", src_path );
+	MSG_DEBUG_STR( 			"      dest_path", dest_path );
 	
 	int ret_val;
-	size_t path_len;
 
 	char *_src_full_path, *src_full_path, *dest_full_path;
 
@@ -433,14 +438,14 @@ int teaop_rename( const char *src_path, const char *dest_path )
 
 	free(src_full_path);
 
-	MSG_DEBUG_INFO( 	"-----> end of rename" );
+	MSG_DEBUG( 	"-----> end of rename" );
 	return ret_val;
 }
 
 int teaop_chmod( const char *path, mode_t mode )
 {
-	MSG_DEBUG_INFO( 	"=====> chmod operation called" );
-	MSG_DEBUG( 			"   path", "%s", path );
+	MSG_DEBUG( 	"=====> chmod operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
@@ -452,7 +457,7 @@ int teaop_chmod( const char *path, mode_t mode )
 
 	//relesePath( full_path );
 
-	MSG_DEBUG_INFO( 	"-----> end of chmod" );
+	MSG_DEBUG( 	"-----> end of chmod" );
 	return ret_val;
 }
 
@@ -461,12 +466,12 @@ int teaop_chmod( const char *path, mode_t mode )
 int teaop_getattr(	const char 	*path, 
 							struct stat *stbuf	)
 {
-	MSG_DEBUG_INFO( 	"=====> getattr operation called" );
+	MSG_DEBUG( 	"=====> getattr operation called" );
 	
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val = 0;
-	MSG_DEBUG( 			"   full_path", "%s", full_path );
+	MSG_DEBUG_STR( "   full path", full_path );
 	//memset( stbuf, 0, sizeof(struct stat) );
 
 	if( lstat( full_path, stbuf ) != 0 )
@@ -475,18 +480,23 @@ int teaop_getattr(	const char 	*path,
 		ret_val = -ENOENT;
 	}
 
+	// overwrite uis and gid
+	stbuf->st_uid = buf_mnt_uid;
+	stbuf->st_gid = buf_mnt_gid;
+
+
 	//relesePath( full_path );
 
-	MSG_DEBUG_INFO( 	"-----> end of getattr" );
+	MSG_DEBUG( 	"-----> end of getattr" );
 	return ret_val;
 }
 
-int teaop_fgetattr(	const char 					*path, 
-							struct stat 				*stbuf, 
+int teaop_fgetattr(	const char 			*path,
+							struct stat *stbuf,
 							struct fuse_file_info	*fi	)
 {
-	MSG_DEBUG_INFO( 	"=====> fgetattr operation called" );
-	MSG_DEBUG( 			"   path", "%s", path );
+	MSG_DEBUG( 	"=====> fgetattr operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
 
 	int ret_val = 0;
 
@@ -498,8 +508,12 @@ int teaop_fgetattr(	const char 					*path,
 		perror( msg_getProgramName() );
 		ret_val = -ENOENT;
 	}
+
+	// overwrite uis and gid
+	stbuf->st_uid = buf_mnt_uid;
+	stbuf->st_gid = buf_mnt_gid;
 	
-	MSG_DEBUG_INFO( 	"-----> end of fgetattr" );
+	MSG_DEBUG( 	"-----> end of fgetattr" );
 	return ret_val;
 }
 

@@ -56,7 +56,7 @@ void load_init( struct config *conf, struct loader *load )
 
 	if( lstat( conf->data.mnt_dir, &mnt_dir_statbuf ) != 0 )
 	{
-		MSG_DEBUG( "errno source", "%d", errno );
+		MSG_DEBUG_( "errno source", "%d", errno );
 
 		perror( msg_getProgramName() );
 		MSG_ERROR_AND_EXIT( "Failed to open mount point, resource might be mounted already" );
@@ -70,7 +70,7 @@ void load_init( struct config *conf, struct loader *load )
 	// multiple storages
 	if( lstat( conf->data.str_dir, &str_dir_statbuf ) != 0 )
 	{
-		MSG_DEBUG( "errno storage", "%d", errno );
+		MSG_DEBUG_( "errno storage", "%d", errno );
 
 		perror( msg_getProgramName() );
 		MSG_ERROR_AND_EXIT( "Failed to open " );
@@ -82,10 +82,13 @@ void load_init( struct config *conf, struct loader *load )
 	}
 
 
-	MSG_DEBUG( "source :", "%s", conf->data.str_dir );
-	
-	MSG_DEBUG( "DEV major", "%d", major( str_dir_statbuf.st_dev ) );
-	MSG_DEBUG( "DEV major", "%d", major( mnt_dir_statbuf.st_dev ) );
+	MSG_DEBUG_STR( "source :", conf->data.str_dir );
+	MSG_DEBUG_STR( "mount :", conf->data.mnt_dir );
+
+	MSG_DEBUG_( "DEV major", "%d", major( str_dir_statbuf.st_dev ) );
+	MSG_DEBUG_( "DEV major", "%d", major( mnt_dir_statbuf.st_dev ) );
+	MSG_DEBUG_( "DEV minor", "%d", minor( str_dir_statbuf.st_dev ) );
+	MSG_DEBUG_( "DEV minor", "%d", minor( mnt_dir_statbuf.st_dev ) );
 
 	/**
 		check if source directory and mount point directory are not the same directory
@@ -98,7 +101,8 @@ void load_init( struct config *conf, struct loader *load )
 				minor( str_dir_statbuf.st_dev ) ==
 				minor( mnt_dir_statbuf.st_dev ) 	)
 			{
-				MSG_ERROR_AND_EXIT( "source directory and mount point are the same!" );
+				MSG_VERBOSE( "source directory and mount point are the same!" );
+				// MSG_ERROR_AND_EXIT( "source directory and mount point are the same!" );
 			}
 	}
 
@@ -124,12 +128,16 @@ void load_init( struct config *conf, struct loader *load )
 
 	char *hash_loc;
 
-	if( (hash_loc = strrchr(str_path, '/'))[1] == '\0' ) {
-		hash_loc[0] = '\0';
+	if( (hash_loc = strrchr(str_path, '/')) != NULL &&
+		hash_loc[1] == '\0' ) {
+		// cut last slash
+		*hash_loc = '\0';
 	}
 
-	if( (hash_loc = strrchr(mnt_path, '/'))[1] == '\0' ) {
-		hash_loc[0] = '\0';
+	if( (hash_loc = strrchr(mnt_path, '/')) != NULL &&
+		hash_loc[1] == '\0' ) {
+		// cut last slash
+		*hash_loc = '\0';
 	}
 
 	conf->data.str_dir = NULL;
@@ -153,8 +161,8 @@ void load_release( struct loader *load )
 void loadedconf_print_summary(FILE* stream, struct config_data* conf_data, struct loader* load)
 {
 	fprintf	( stream, 	"%s started with the following parameters:\n"\
-								"     storage dir (fixed uid/gid: %d/%d): %s\n"\
-								"       mount dir (fixed uid/gid: %d/%d): %s\n"\
+								"     storage dir (fixed uid/gid: %d/%d): %s/\n"\
+								"       mount dir (fixed uid/gid: %d/%d): %s/\n"\
 								" not allowed dir: %s\n"\
 								"not allowed file: %s\n",
 							msg_getProgramName(),

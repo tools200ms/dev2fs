@@ -86,7 +86,7 @@ void sys_init( 	const struct config *conf,
 
 	// assigns attribute read operations
 	operations->getattr		 = teaop_getattr;
-	operations->fgetattr		 = teaop_fgetattr;
+	operations->fgetattr	= teaop_fgetattr;
 
 	// assigns attribute modify operations
 	// assigns link read operations
@@ -94,7 +94,7 @@ void sys_init( 	const struct config *conf,
 
 
 	//engine_setup( NULL, map->map_blank_node );
-	operations_init( map->str_buff );
+	operations_init( load, map->str_buff );
 }
 
 void sys_release( struct system *sys )

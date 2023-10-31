@@ -22,7 +22,7 @@
 #define _TEAFS_ORG_CORE_OPERATIONS_H_
 
 
-void operations_init( StringBuffer *str_buff );
+void operations_init( const struct loader *load, StringBuffer *str_buff );
 
 /* teaFS initialize functions, defined in teafs.c */
 void *teafs_init( struct fuse_conn_info *conn );

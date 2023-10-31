@@ -21,8 +21,6 @@
 #ifndef _TEAFS_ORG_CORE_MAP_H_
 #define _TEAFS_ORG_CORE_MAP_H_
 
-#include "../lib/tags.h"
-
 #include "../lib/list.h"
 
 
@@ -78,12 +76,6 @@ MapNode;
 typedef struct map_reference
 {
 	/**
-		tag defining the name of a next container OR 
-		tag defining the name of the current container from 
-		the perspective of the previous one
-	*/
-	Tag *tag;
-	/**
 		reference to the next container OR 
 		reference to the previous container
 	*/
@@ -99,21 +91,7 @@ MapRef;
 MapNode *map_init();
 void map_destroy();
 
-MapNode *map_newNode( MapNode *node, Tag *tag );
-int map_attachNode( MapNode *node, MapNode *attaching_node, Tag *tag );
 
-int map_removeNode( MapNode *node );
-Tag **map_removeEmptyNode( MapNode *node );
-
-void *map_setContext( MapNode *node, void *context );
-void *map_getContext( MapNode *node );
-
-MapNode *map_navigateAddTag( MapNode *node, Tag *tag );
-MapNode *map_navigateSubTag( MapNode *node, Tag *tag );
-
-MapNode *map_navigateSubAnyTag( MapNode *node, Tag **tag_ptr );
-
-//int map_removeTag( NotTreeRef *not_tree_ref, Tag *tag );
 
 
 #endif // _TEAFS_ORG_CORE_MAP_H_

@@ -33,10 +33,10 @@
 
 #ifdef DEBUG
 
-#define MSG_DEBUG_INFO( desc ) \
+#define MSG_DEBUG( desc ) \
 			fprintf( stdout, __FILE__ ": %d, %s\n", __LINE__, desc );
 
-#define MSG_DEBUG( desc, format, val ) \
+#define MSG_DEBUG_( desc, format, val ) \
 			fprintf( stdout, __FILE__ ": %d, " desc " is '" format "'\n", __LINE__, val );
 
 #define MSG_DEBUG_DEC( desc, val ) \
@@ -85,8 +85,8 @@
 /**
 	just put nothing when DEBUG is not defined
 */
-#define MSG_DEBUG_INFO( desc )
-#define MSG_DEBUG( desc, format, val )
+#define MSG_DEBUG( desc )
+#define MSG_DEBUG_( desc, format, val )
 #define MSG_DEBUG_DEC( desc, val )
 #define MSG_DEBUG_STR( desc, val )
 #define MSG_DEBUG_BR

@@ -31,93 +31,13 @@
 
 MapNode *map_init()
 {
-	MapNode *map_node = malloc( sizeof (MapNode) );
-	
-	memset( map_node, 0, sizeof (MapNode) );
-
 
 	
-	return map_node;
-}
-
-static MapNode *map_createNode()
-{
-	MapNode *node = malloc( sizeof (MapNode) );
-
-	memset( node, 0, sizeof (MapNode) );
-
-
-
-	return node;
-}
-
-static MapRef *map_initMapRef( Tag *tag, MapNode *sub_node, MapNode *add_node )
-{
-	MapRef *map_ref = malloc( sizeof(MapRef) );
-	map_ref->tag = tag;
-	
-	map_ref->sub_ref = sub_node;
-	map_ref->add_ref = add_node;
-	
-	return map_ref;
+	return NULL;
 }
 
 void map_destroy()
 {
 	// set to hold uniquly references
-}
-
-// MapNode *map_addNewNode( MapNode *node, MapNode *new_node, Tag *tag )
-MapNode *map_newNode( MapNode *node, Tag *tag )
-{
-
-	
-	return NULL;
-}
-
-int map_attachNode( MapNode *node, MapNode *attaching_node, Tag *tag )
-{
-
-	
-	return -1;
-}
-
-
-
-Tag **map_removeEmptyNode( MapNode *node )
-{
-
-	return NULL;
-}
-
-void *map_setContext( MapNode *node, void *context )
-{
-	void *prev_context_data = node->context_data;
-	
-	node->context_data = context;
-	
-	return prev_context_data;
-}
-
-void *map_getContext( MapNode *node )
-{
-	return node->context_data;
-}
-
-MapNode *map_navigateAddTag( MapNode *node, Tag *tag )
-{
-
-	return NULL;
-}
-
-MapNode *map_navigateSubTag( MapNode *node, Tag *tag )
-{
-
-	return NULL;
-}
-
-MapNode *map_navigateSubAnyTag( MapNode *node, Tag **tag_ptr )
-{
-	return NULL;
 }
 

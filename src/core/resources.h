@@ -22,13 +22,11 @@
 #ifndef _TEAFS_ORG_CORE_RESOURCES_H_
 #define _TEAFS_ORG_CORE_RESOURCES_H_
 
-#include "../lib/tags.h"
 #include "map.h"
 
 /**
 	resource declarations
 */
-typedef Tag * ResID;
 
 #define RES_MAX_COUNT 128
 typedef struct resource_loacations
@@ -46,11 +44,10 @@ void locat_add( ResLocations *res_locat, char *path );
 /**
 	used during the map creation process
 */
-extern ResID NULL_ResID;
+// extern ResID NULL_ResID;
 
 typedef struct resource_map
 {
-	ResID *res_id[256];
 //	ResLocations *res_loc[256];
 	MapNode *map_ref[256];
 
@@ -59,25 +56,5 @@ typedef struct resource_map
 ResourceMap;
 
 
-ResourceMap *res_init();
-void res_destroy( ResourceMap *rm );
-
-
-ResID *res_create( ResID *res_id, Tag *tag );
-
-ResID *res_register( ResourceMap *res_map, 
-							ResID *res_id, 
-							MapNode ***map_node );
-
-ResID *res_find( 	ResourceMap *res_map, 
-						ResID *res_id, 
-						Tag *tag );
-
-MapNode *res_findMapNode( ResourceMap *res_map, ResID *res_id, Tag *tag );
-
-int res_removeByMapNode( ResourceMap *res_map, MapNode *node );
-int res_isTagUsed( ResourceMap *res_map, Tag *tag );
-
-void res_print( FILE *stream, ResourceMap *res_map );
 
 #endif // _TEAFS_ORG_CORE_RESOURCES_H_

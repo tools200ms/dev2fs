@@ -37,7 +37,7 @@ static int dev2fs_options_proc( 		void *data,
 										int key,
 										struct fuse_args *outargs 	);
 
-#define NOTTREE_COMMANDLINE_OPT_KEY( opt_template, opt_var, value ) \
+#define DEV2FS_OPT_KEY( opt_template, opt_var, value ) \
 			{ opt_template, offsetof( struct config_data, opt_var ), value }
 
 enum	{ KEY_VERBOSE, KEY_VERSION, KEY_HELP };
@@ -45,28 +45,28 @@ enum	{ KEY_VERBOSE, KEY_VERSION, KEY_HELP };
 
 static struct fuse_opt nottree_commandline_opts[] = 
 {
-	NOTTREE_COMMANDLINE_OPT_KEY( 	CONF_OPT_NOTALLOWED_DIR_NAME, 
+	DEV2FS_OPT_KEY( 	CONF_OPT_NOTALLOWED_DIR_NAME,
 											notallowed_dir_name, 
 											0 ), 
-	NOTTREE_COMMANDLINE_OPT_KEY( 	CONF_OPT_NOTALLOWED_FILE_NAME, 
+	DEV2FS_OPT_KEY( 	CONF_OPT_NOTALLOWED_FILE_NAME,
 											notallowed_file_name, 
 											0 ), 
 
-	NOTTREE_COMMANDLINE_OPT_KEY( 	CONF_ARG_NOTALLOWED_DIR_NAME, 
+	DEV2FS_OPT_KEY( 	CONF_ARG_NOTALLOWED_DIR_NAME,
 											notallowed_dir_name, 
 											0 ), 
-	NOTTREE_COMMANDLINE_OPT_KEY( 	CONF_ARG_NOTALLOWED_FILE_NAME, 
+	DEV2FS_OPT_KEY( 	CONF_ARG_NOTALLOWED_FILE_NAME,
 											notallowed_file_name, 
 											0 ), 
 
-	FUSE_OPT_KEY( CONF_ARG_DEBUG,				KEY_VERBOSE ), 
-	FUSE_OPT_KEY( CONF_OPT_DEBUG,				KEY_VERBOSE ), 
+	FUSE_OPT_KEY( CONF_ARG_DEBUG,				KEY_VERBOSE ),
+	FUSE_OPT_KEY( CONF_OPT_DEBUG,				KEY_VERBOSE ),
 	FUSE_OPT_KEY( CONF_ARG_FOREGROUND,		KEY_VERBOSE ), 
 
 	FUSE_OPT_KEY( CONF_ARG_SHORT_VERSION, 	KEY_VERSION ), 
-	FUSE_OPT_KEY( CONF_ARG_VERSION, 			KEY_VERSION ), 
-	FUSE_OPT_KEY( CONF_ARG_SHORT_HELP, 			KEY_HELP ), 
-	FUSE_OPT_KEY( CONF_ARG_HELP, 					KEY_HELP ), 
+	FUSE_OPT_KEY( CONF_ARG_VERSION, 		KEY_VERSION ),
+	FUSE_OPT_KEY( CONF_ARG_SHORT_HELP, 		KEY_HELP ),
+	FUSE_OPT_KEY( CONF_ARG_HELP, 			KEY_HELP ),
 	FUSE_OPT_END
 };
 
@@ -204,10 +204,9 @@ static int dev2fs_options_proc( 	void *data,
 	{
 		case FUSE_OPT_KEY_NONOPT:
 		
-			MSG_DEBUG_INFO( "FUSE_OPT_KEY_NONOPT" );
+			MSG_DEBUG( "FUSE_OPT_KEY_NONOPT" );
 			MSG_DEBUG_BR;
 
-			
 			switch( 	((conf_data_ptr->str_dir == NULL) ? 0 : 1) +
 						((conf_data_ptr->mnt_dir == NULL) ? 0 : 2) )
 			{
@@ -227,15 +226,18 @@ static int dev2fs_options_proc( 	void *data,
 			//assert
 			exit( 1 );
 
+		// case FUSE_OPT_KEY_OPT
+
+
 		case KEY_VERBOSE:
 			msgSetVerboseMode();
-			MSG_DEBUG_INFO( "FUSE_VERBOSE" );
+			MSG_DEBUG( "FUSE_VERBOSE" );
 			MSG_DEBUG_BR;
 		CONF_PARSE_KEEP_FLAG;
 		
 		case KEY_VERSION:
 
-			MSG_DEBUG_INFO( "FUSE_VERSION" );
+			MSG_DEBUG( "FUSE_VERSION" );
 			MSG_DEBUG_BR;
 
 		conf_parser_program_abort_cause = CONF_PARSER_VERSION_PRINT;
@@ -244,7 +246,7 @@ static int dev2fs_options_proc( 	void *data,
 
 		case KEY_HELP:
 
-			MSG_DEBUG_INFO( "FUSE_HELP" );
+			MSG_DEBUG( "FUSE_HELP" );
 			MSG_DEBUG_BR;
 		
 		conf_parser_program_abort_cause = CONF_PARSER_HELP_PRINT;
@@ -255,5 +257,6 @@ static int dev2fs_options_proc( 	void *data,
 		break;
 	}
 
+	// MSG_DEBUG_STR( "Keep flag for: ", arg );
 	CONF_PARSE_KEEP_FLAG;
 }

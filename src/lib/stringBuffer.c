@@ -64,8 +64,8 @@ void strbuff_destroy( StringBuffer *buf )
 char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 {
 	int rp_len = strlen( rel_path );
-	MSG_DEBUG( 			"     (old) base path", "%s", buf->p_buf );
-	MSG_DEBUG( 			"            rel len.", "%d", buf->rp_buf_len );
+	MSG_DEBUG_STR( "     (old) base path", buf->p_buf );
+	MSG_DEBUG_DEC( "            rel len.", buf->rp_buf_len );
 
 	if( buf->rp_buf_len < rp_len ) {
 		char *p_buf;
@@ -73,7 +73,8 @@ char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 			new_rp_buf_len = rp_len + REL_PATH_BUFF_MARGIN;
 
 		(buf->rp_buf_start)[0] = '\0';
-		p_buf = malloc( (sizeof (char)) * (new_rp_buf_len + 1) );
+		p_buf = malloc( base_len + (sizeof (char)) * (new_rp_buf_len + 1) );
+
 		if(p_buf == NULL)
 			return NULL;
 
@@ -83,12 +84,12 @@ char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 		buf->rp_buf_start = buf->p_buf + base_len;
 		buf->rp_buf_len = new_rp_buf_len;
 
-		MSG_DEBUG( 			"   (changed) rel len.", "%d", buf->rp_buf_len );
+		MSG_DEBUG_DEC( "   (changed) rel len.", buf->rp_buf_len );
 	}
 
 	strcpy(buf->rp_buf_start, rel_path);
 
-	MSG_DEBUG( 			"     (new) base path", "%s", buf->p_buf );
+	MSG_DEBUG_STR( "     (new) base path", buf->p_buf );
 
 	return buf->p_buf;
 }
