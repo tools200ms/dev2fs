@@ -38,8 +38,9 @@
 #include <sys/statvfs.h>
 /* ******************************************** */
 
-
+#include <sys/time.h>
 #include <string.h>
+
 #include "../shell/mapper.h"
 
 #include "resources.h"
@@ -69,7 +70,8 @@ void operations_init( const struct loader *load, StringBuffer *str_buff )
 /* TEAFS OPERATIONS */
 
 /* File system statistics, 
-	function is forwarding fs call.
+	There might be varius filesystems belloww DevFS.
+	TODO: checkout what valius to set f_bsize,f_blocks etc.
  */
 int d2op_statfs( const char *path, struct statvfs *buf )
 {
@@ -84,8 +86,11 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 	if( (ret_val = statvfs( full_path, buf )) == -1 )
 		perror( msg_getProgramName() );
 	
-
 	//relesePath( full_path );
+
+	// Information returned
+	// buf->f_flag = ST_RDONLY | ST_NOSUID;
+
 	
 	MSG_DEBUG( 	"-----> end of statfs" );
 	return ret_val;
@@ -151,24 +156,36 @@ int d2op_readdir(	const char 					*path,
 
 /* Directory releasedir operation, 
 	releases fi->fh handler.
+	TODO: assuming dev2fs sould not hangle handle closedir if
+			'path == NULL' (dir has been removed after open)
+			'CheckItOut
  */
 int d2op_releasedir( 	const char 					*path, 
 						struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 		"=====> releasedir operation called" );
+
+	if( path == NULL ) {
+		// directory has been removed pior to this call
+		MSG_DEBUG( 	"      directory has been removed pior to release operation" );
+
+		return EBADF;
+	}
+
 	MSG_DEBUG_STR( 	"      path", path );
 
+	int ret_val;
 	struct dir_handler *d_handler;
 	
 	memcpy( &d_handler, &(fi->fh), sizeof ( struct dir_handler * ) );
 	
-	closedir( d_handler->dir_ptr );
+	ret_val = closedir( d_handler->dir_ptr );
 	
 	free( d_handler );
 	
 	MSG_DEBUG( 	"-----> end of releasedir" );
 	
-	return 0;
+	return ret_val;
 }
 
 /* Directories modify operations */
@@ -412,7 +429,6 @@ int d2op_unlink( const char *path )
 	//relesePath( full_path );
 }
 
-/* files and directories modify operations */
 int d2op_rename( const char *src_path, const char *dest_path )
 {
 	MSG_DEBUG( 	"=====> rename operation called" );
@@ -442,52 +458,44 @@ int d2op_rename( const char *src_path, const char *dest_path )
 	return ret_val;
 }
 
-int d2op_chmod( const char *path, mode_t mode )
-{
-	MSG_DEBUG( 	"=====> chmod operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+/* attributes read & modify operations */
 
-	char *full_path = strbuff_setFullPath( op_str_buff, path );
-	int ret_val;
-
-	if( (ret_val = chmod( full_path, mode )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
-
-	//relesePath( full_path );
-
-	MSG_DEBUG( 	"-----> end of chmod" );
-	return ret_val;
-}
-
-/* attributes read operations */
-
-int d2op_getattr(	const char 	*path, 
+/**
+ * TODO: Dev2FS shall have an option to follow
+ * symbolic links, that accually means that any
+ * symbolic links created at mounted FS will
+ * become directory to which link points.
+ * It should be covinience to do so, application
+ * on the top would see coherent directory structure
+ * (e.g. apache server)
+ */
+int d2op_getattr(	const char 			*path,
 							struct stat *stbuf	)
 {
 	MSG_DEBUG( 	"=====> getattr operation called" );
-	
-	//char *full_path = updatePath( path );
-	char *full_path = strbuff_setFullPath( op_str_buff, path );
-	int ret_val = 0;
-	MSG_DEBUG_STR( "   full path", full_path );
-	//memset( stbuf, 0, sizeof(struct stat) );
+	MSG_DEBUG_STR( 	"   path", path );
 
-	if( lstat( full_path, stbuf ) != 0 )
-	{
-		perror( msg_getProgramName() );
-		ret_val = -ENOENT;
+	int ret_val = 0;
+	char follow_links = 0; // TODO do bitmask
+
+	if( follow_links != 0 ) {
+		//ret_val = (fi != NULL) ? fstat( fi->fh, stbuf ) :
+		ret_val = stat( strbuff_setFullPath( op_str_buff, path ), stbuf );
+	} else {
+		ret_val = lstat(
+					strbuff_setFullPath( op_str_buff, path ),
+					stbuf );
 	}
 
-	// overwrite uis and gid
-	stbuf->st_uid = buf_mnt_uid;
-	stbuf->st_gid = buf_mnt_gid;
-
-
-	//relesePath( full_path );
-
-	MSG_DEBUG( 	"-----> end of getattr" );
+	if( ret_val != 0 ) {
+		perror( msg_getProgramName() );
+	} else {
+		// overwrite uis and gid
+		stbuf->st_uid = buf_mnt_uid;
+		stbuf->st_gid = buf_mnt_gid;
+	}
+	
+	MSG_DEBUG_DEC( 	"-----> end of getattr", ret_val );
 	return ret_val;
 }
 
@@ -502,7 +510,7 @@ int d2op_fgetattr(	const char 			*path,
 
 	struct file_handler *f_handler;
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
-	
+
 	if( fstat( f_handler->fd, stbuf ) != 0 )
 	{
 		perror( msg_getProgramName() );
@@ -512,15 +520,100 @@ int d2op_fgetattr(	const char 			*path,
 	// overwrite uis and gid
 	stbuf->st_uid = buf_mnt_uid;
 	stbuf->st_gid = buf_mnt_gid;
-	
+
 	MSG_DEBUG( 	"-----> end of fgetattr" );
 	return ret_val;
 }
 
-/* attributes modify operations */
+
+int d2op_chmod( const char *path, mode_t mode )
+{
+	MSG_DEBUG( 	"=====> chmod operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+
+	// char *full_path = strbuff_setFullPath( op_str_buff, path );
+	int ret_val;
+
+	//ret_val = ( fi == NULL ) ?
+	ret_val = chmod(
+			strbuff_setFullPath( op_str_buff, path ), mode );
+
+	//	fchmod(fi->fh, mode);
+
+	if( ret_val != 0 )
+	{
+		perror( msg_getProgramName() );
+	}
+
+	//relesePath( full_path );
+
+	MSG_DEBUG( 	"-----> end of chmod" );
+	return ret_val;
+}
+
+int d2op_chown( const char *path, uid_t uid, gid_t gid)
+{
+	MSG_DEBUG( 	"=====> chown operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+
+	int ret_val = 0;
+	// TODO: check if fs is read only
+	// if so: return EROFS;
+
+	if( uid == buf_mnt_uid && gid == buf_mnt_gid )
+	{
+		// remap permissions:
+		//ret_val = chown(
+		//	strbuff_setFullPath( op_str_buff, path ),
+		//	buf_str_uid, buf_str_gid);
+	} else {
+		ret_val = EPERM;
+	}
+
+	// lack of permisions to change owner
+	MSG_DEBUG_DEC( 	"-----> end of chown", ret_val );
+	return ret_val;
+}
+
+int d2op_utimens( const char *path, const struct timespec tv_am[2] )
+{
+	MSG_DEBUG( 	"=====> utimens operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+	int ret_val;
+	struct timeval tv_am_str[2];
+
+	/* Copy access time and modification time,
+	 * utimes takes a time at lower resolution
+	 * (msec) vs. (usec) provided by FUSE
+	 */
+	// NOTE: we could round the divvision,
+	// but we operate on microsecounds, what is
+	// very precaise taking into acount that it's
+	// 'just' file aacess/modification time
+	// the better strategy seems to be to
+	// truncate division resolts reather then
+	// overhead with casting and calling
+	// math. function
+
+	// Pass access time:
+	tv_am_str[0].tv_sec = tv_am[0].tv_sec;
+	tv_am_str[0].tv_usec = (tv_am[0].tv_nsec / 1000);
+
+	// Pass modification time:
+	tv_am_str[1].tv_sec = tv_am[0].tv_sec;
+	tv_am_str[1].tv_usec = (tv_am[0].tv_nsec / 1000);
+
+	// TODO: in this case don't follow symb. links,
+	// but shall be implemented
+	ret_val = utimes(strbuff_setFullPath( op_str_buff, path ),
+		tv_am_str
+	);
+
+	MSG_DEBUG( 	"-----> end of utimens" );
+	return ret_val;
+}
 
 
-/* links read operations */
 
 
 

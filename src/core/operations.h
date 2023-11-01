@@ -66,7 +66,6 @@ int d2op_release( 	const char 				*path,
 					struct fuse_file_info 	*fi	);
 
 /* files modify operations */
-
 int d2op_create( 	const char 					*path, 
 					mode_t						 mode,
 					struct fuse_file_info 	*fi );
@@ -85,23 +84,24 @@ int d2op_flush( 		const char 					*path,
 
 int d2op_unlink(		const char *path 						);
 
-/* files and directories modify operations */
-int d2op_rename( 	const char 					*src_path, 
-							const char 					*dest_path 	);
+int d2op_rename( 	const char 			*src_path,
+					const char 			*dest_path );
 
-int d2op_chmod(		const char 					*path, 
-							mode_t						 mode		);
+/* attributes read & modify operations */
 
-/* attributes read operations */
+int d2op_getattr(	const char 					*path,
+						struct stat 			*stbuf );
 
-int d2op_getattr(	const char 					*path, 
-							struct stat 				*stbuf	);
-
-int d2op_fgetattr(	const char 					*path, 
-							struct stat 				*stbuf, 
+int d2op_fgetattr(	const char 					*path,
+							struct stat 				*stbuf,
 							struct fuse_file_info	*fi	);
 
-/* attributes modify operations */
+int d2op_chmod(	const char 				*path,
+				mode_t					mode );
+
+int d2op_chown( const char *path, uid_t uid, gid_t gid);
+
+int d2op_utimens( const char *path, const struct timespec tv_am[2] );
 
 
 /* links read operations */

@@ -43,6 +43,7 @@
 // include 'major' function
 #include <sys/sysmacros.h>
 
+
 struct dev2fs_references
 {
 	Config *conf;

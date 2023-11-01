@@ -55,38 +55,39 @@ void sys_init( 	const struct config *conf,
 	operations->statfs		 = d2op_statfs;
 
 	// assigns directory read operations
-
 	operations->opendir		= d2op_opendir;
 	operations->readdir		= d2op_readdir;
+
 	operations->releasedir	= d2op_releasedir;
 
 	// assigns directory modify operations
-	operations->mkdir			 = d2op_mkdir;
-	operations->rmdir			 = d2op_rmdir;
+	operations->mkdir		= d2op_mkdir;
+	operations->rmdir		= d2op_rmdir;
 
 	// assign file read operations
+	operations->open		= d2op_open;
+	operations->read		= d2op_read;
 
-	operations->open			 = d2op_open;
-	operations->read			 = d2op_read;
-
-	operations->release		 = d2op_release;
+	operations->release		= d2op_release;
 
 	// assign file modify operations
-
 	operations->create		 = d2op_create;
-	operations->write			 = d2op_write;
+	operations->write		 = d2op_write;
 
-	operations->truncate		 = d2op_truncate;
-	operations->flush			 = d2op_flush;
+	operations->truncate	 = d2op_truncate;
+	operations->flush		 = d2op_flush;
 	operations->unlink		 = d2op_unlink;
 
-	// assigns file and directory modify operations
 	operations->rename		 = d2op_rename;
-	operations->chmod		 = d2op_chmod;
+	//
 
-	// assigns attribute read operations
-	operations->getattr		 = d2op_getattr;
-	operations->fgetattr	= d2op_fgetattr;
+	// assigns attribute read & modify operations
+	operations->getattr 	= d2op_getattr;
+	operations->fgetattr 	= d2op_fgetattr;
+	operations->chmod 		= d2op_chmod;
+	operations->chown 		= d2op_chown;
+	operations->utimens 	= d2op_utimens;
+
 
 	// assigns attribute modify operations
 	// assigns link read operations
