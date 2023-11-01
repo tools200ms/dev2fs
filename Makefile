@@ -36,7 +36,7 @@ clean: clean_current_dir
 release: clean_current_dir
 	@echo "----- Releasing ----------------------------"
 	$(MAKE) -C ${SRC_DIR} deepclean
-
+	$(shell [ -d ./release ] || mkdir ./release)
 ifeq ($(shell [ -f ./release/${RELEASE_NAME}.tar.xz ] && echo 1 || echo 0),1)
 	@echo "File './release/${RELEASE_NAME}.tar.xz' already exists, do you want to remove it and re-release (y),"
 	@echo "or keep the file unchanged (n)?"

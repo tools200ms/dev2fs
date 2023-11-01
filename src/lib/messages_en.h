@@ -1,22 +1,22 @@
 /* messages_en.h --- Definitions of English language messages, defined 
                      messages are displayed by program in the case of 
                      help request or error/warning occurrence.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
- * This file is part of TeaFS.
+ * This file is part of Dev2FS.
  * 
- * TeaFS is free software: you can redistribute it and/or modify
+ * Dev2FS is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * TeaFS is distributed in the hope that it will be useful,
+ * Dev2FS is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with TeaFS.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Dev2FS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 

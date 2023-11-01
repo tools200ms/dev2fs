@@ -1,20 +1,20 @@
 /* operations.c --- Functions to handle teaFS I/O calls.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
- * This file is part of TeaFS.
+ * This file is part of Dev2FS.
  * 
- * TeaFS is free software: you can redistribute it and/or modify
+ * Dev2FS is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * 
- * TeaFS is distributed in the hope that it will be useful,
+ * Dev2FS is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
- * along with TeaFS.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Dev2FS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
@@ -67,48 +67,44 @@ void operations_init( const struct loader *load, StringBuffer *str_buff )
 }
 
 
-/* TEAFS OPERATIONS */
+/* Dev2FS operations */
 
-/* File system statistics, 
-	There might be varius filesystems belloww DevFS.
-	TODO: checkout what valius to set f_bsize,f_blocks etc.
+/* File system statistics,
+	function is forwarding fs call.
  */
 int d2op_statfs( const char *path, struct statvfs *buf )
 {
 	MSG_DEBUG( 		"=====> statfs operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
-	
+
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
-	
+
 	//updatePath( path );
 	int ret_val;
-	
+
 	if( (ret_val = statvfs( full_path, buf )) == -1 )
 		perror( msg_getProgramName() );
-	
+
+
 	//relesePath( full_path );
 
-	// Information returned
-	// buf->f_flag = ST_RDONLY | ST_NOSUID;
-
-	
 	MSG_DEBUG( 	"-----> end of statfs" );
 	return ret_val;
 }
 
-/* Directory open operation, 
-	function is forwarding fs call, fi->fh is set 
+/* Directory open operation,
+	function is forwarding fs call, fi->fh is set
 	for readdir and releasedir operations.
  */
-int d2op_opendir( const char 					*path, 
+int d2op_opendir( const char 					*path,
 							struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 		"=====> opendir operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
-	
+
 	/*******************************************************/
 	/*******************************************************/
-	
+
 	struct dir_handler *d_handler = malloc( sizeof ( struct dir_handler ) );
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -121,16 +117,16 @@ int d2op_opendir( const char 					*path,
 	//relesePath( full_path );
 
 	memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
-	
+
 	MSG_DEBUG( 	"-----> end of opendir" );
 	return 0;
 }
 
-/* Directory readdir operation, 
-	function is forwarding fs call, handler from fi->fh is used to 
+/* Directory readdir operation,
+	function is forwarding fs call, handler from fi->fh is used to
 	read directory.
  */
-int d2op_readdir(	const char 					*path, 
+int d2op_readdir(	const char 					*path,
 							void 					*buf,
 							fuse_fill_dir_t 		filler,
 							off_t 					offset,
@@ -154,46 +150,34 @@ int d2op_readdir(	const char 					*path,
 	return 0;
 }
 
-/* Directory releasedir operation, 
+/* Directory releasedir operation,
 	releases fi->fh handler.
-	TODO: assuming dev2fs sould not hangle handle closedir if
-			'path == NULL' (dir has been removed after open)
-			'CheckItOut
  */
-int d2op_releasedir( 	const char 					*path, 
+int d2op_releasedir( 	const char 					*path,
 						struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 		"=====> releasedir operation called" );
-
-	if( path == NULL ) {
-		// directory has been removed pior to this call
-		MSG_DEBUG( 	"      directory has been removed pior to release operation" );
-
-		return EBADF;
-	}
-
 	MSG_DEBUG_STR( 	"      path", path );
 
-	int ret_val;
 	struct dir_handler *d_handler;
-	
+
 	memcpy( &d_handler, &(fi->fh), sizeof ( struct dir_handler * ) );
-	
-	ret_val = closedir( d_handler->dir_ptr );
-	
+
+	closedir( d_handler->dir_ptr );
+
 	free( d_handler );
-	
+
 	MSG_DEBUG( 	"-----> end of releasedir" );
-	
-	return ret_val;
+
+	return 0;
 }
 
 /* Directories modify operations */
 
-/* Directory mkdir operation, 
+/* Directory mkdir operation,
 	creates directories in multiple locations if needed.
  */
-int d2op_mkdir( 	const char 					*path, 
+int d2op_mkdir( 	const char 					*path,
 						mode_t 					mode 	)
 {
 	MSG_DEBUG( 	"=====> mkdir operation called" );
@@ -204,7 +188,7 @@ int d2op_mkdir( 	const char 					*path,
 
 	ret_val = mkdir( full_path, mode );
 	chown( full_path, buf_str_uid, buf_str_gid );
-	
+
 	return ret_val;
 }
 
@@ -259,10 +243,10 @@ int d2op_open(	const char 	*path,
 	return ret_val;
 }
 
-int d2op_read(	const char 					*path, 
+int d2op_read(	const char 					*path,
 						char 				*buf,
-						size_t 						size, 
-						off_t 						offset, 
+						size_t 						size,
+						off_t 						offset,
 						struct fuse_file_info 	*fi	)
 {
 	MSG_DEBUG( 		"=====> read operation called" );
@@ -294,7 +278,7 @@ int d2op_read(	const char 					*path,
 	return read_bytes;
 }
 
-int d2op_release( 	const char 					*path, 
+int d2op_release( 	const char 					*path,
 							struct fuse_file_info 	*fi	 )
 {
 	//char *full_path = updatePath( path );
@@ -315,15 +299,15 @@ int d2op_release( 	const char 					*path,
 
 /* file modify operations */
 
-int d2op_create( 	const char 					*path, 
-							mode_t						 mode, 
+int d2op_create( 	const char 					*path,
+							mode_t						 mode,
 							struct fuse_file_info 	*fi 		)
 {
 	MSG_DEBUG( 	"=====> create operation called" );
 	MSG_DEBUG_STR( 		"      path", path );
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
-	
+
 	struct file_handler *f_handler = malloc( sizeof (struct file_handler) );
 
 	if( (f_handler->fd = open( full_path, fi->flags, mode )) == -1 )
@@ -335,17 +319,17 @@ int d2op_create( 	const char 					*path,
 	}
 
 	chown( full_path, buf_str_uid, buf_str_gid );
-	
+
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
-	
+
 	MSG_DEBUG( 	"-----> end of create" );
 	return 0;
 }
 
-int d2op_write( 	const char 					*path, 
-						const char 					*buf, 
-						size_t 						 size, 
-						off_t 						 offset, 
+int d2op_write( 	const char 					*path,
+						const char 					*buf,
+						size_t 						 size,
+						off_t 						 offset,
 						struct fuse_file_info	*fi 		)
 {
 	MSG_DEBUG( 	"=====> write operation called" );
@@ -372,28 +356,28 @@ int d2op_write( 	const char 					*path,
 	return write_bytes;
 }
 
-int d2op_truncate( 	const char 				*path, 
+int d2op_truncate( 	const char 				*path,
 							off_t						 length 	)
 {
 	MSG_DEBUG( 	"=====> truncate operation called" );
 	MSG_DEBUG_STR( 	"      path", path );
-	
+
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
-	
+
 	if( (ret_val = truncate( full_path, length )) == -1 )
 	{
 		perror( msg_getProgramName() );
 	}
 
 	//relesePath( full_path );
-	
+
 	MSG_DEBUG( 	"-----> end of truncate" );
 	return ret_val;
 }
 
-int d2op_flush( 	const char 					*path, 
+int d2op_flush( 	const char 					*path,
 						struct fuse_file_info	*fi 		)
 {
 	MSG_DEBUG( 		"=====> flush operation called" );
@@ -429,12 +413,13 @@ int d2op_unlink( const char *path )
 	//relesePath( full_path );
 }
 
+/* files and directories modify operations */
 int d2op_rename( const char *src_path, const char *dest_path )
 {
 	MSG_DEBUG( 	"=====> rename operation called" );
 	MSG_DEBUG_STR( 			"      src_path", src_path );
 	MSG_DEBUG_STR( 			"      dest_path", dest_path );
-	
+
 	int ret_val;
 
 	char *_src_full_path, *src_full_path, *dest_full_path;
@@ -458,44 +443,34 @@ int d2op_rename( const char *src_path, const char *dest_path )
 	return ret_val;
 }
 
-/* attributes read & modify operations */
 
-/**
- * TODO: Dev2FS shall have an option to follow
- * symbolic links, that accually means that any
- * symbolic links created at mounted FS will
- * become directory to which link points.
- * It should be covinience to do so, application
- * on the top would see coherent directory structure
- * (e.g. apache server)
- */
-int d2op_getattr(	const char 			*path,
+/* attributes read operations */
+
+int d2op_getattr(	const char 	*path,
 							struct stat *stbuf	)
 {
 	MSG_DEBUG( 	"=====> getattr operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
 
+	//char *full_path = updatePath( path );
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val = 0;
-	char follow_links = 0; // TODO do bitmask
+	MSG_DEBUG_STR( "   full path", full_path );
+	//memset( stbuf, 0, sizeof(struct stat) );
 
-	if( follow_links != 0 ) {
-		//ret_val = (fi != NULL) ? fstat( fi->fh, stbuf ) :
-		ret_val = stat( strbuff_setFullPath( op_str_buff, path ), stbuf );
-	} else {
-		ret_val = lstat(
-					strbuff_setFullPath( op_str_buff, path ),
-					stbuf );
-	}
-
-	if( ret_val != 0 ) {
+	if( lstat( full_path, stbuf ) != 0 )
+	{
 		perror( msg_getProgramName() );
-	} else {
-		// overwrite uis and gid
-		stbuf->st_uid = buf_mnt_uid;
-		stbuf->st_gid = buf_mnt_gid;
+		ret_val = -ENOENT;
 	}
-	
-	MSG_DEBUG_DEC( 	"-----> end of getattr", ret_val );
+
+	// overwrite uis and gid
+	stbuf->st_uid = buf_mnt_uid;
+	stbuf->st_gid = buf_mnt_gid;
+
+
+	//relesePath( full_path );
+
+	MSG_DEBUG( 	"-----> end of getattr" );
 	return ret_val;
 }
 
@@ -525,22 +500,15 @@ int d2op_fgetattr(	const char 			*path,
 	return ret_val;
 }
 
-
 int d2op_chmod( const char *path, mode_t mode )
 {
 	MSG_DEBUG( 	"=====> chmod operation called" );
 	MSG_DEBUG_STR( 	"   path", path );
 
-	// char *full_path = strbuff_setFullPath( op_str_buff, path );
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
 
-	//ret_val = ( fi == NULL ) ?
-	ret_val = chmod(
-			strbuff_setFullPath( op_str_buff, path ), mode );
-
-	//	fchmod(fi->fh, mode);
-
-	if( ret_val != 0 )
+	if( (ret_val = chmod( full_path, mode )) == -1 )
 	{
 		perror( msg_getProgramName() );
 	}
@@ -563,9 +531,9 @@ int d2op_chown( const char *path, uid_t uid, gid_t gid)
 	if( uid == buf_mnt_uid && gid == buf_mnt_gid )
 	{
 		// remap permissions:
-		//ret_val = chown(
-		//	strbuff_setFullPath( op_str_buff, path ),
-		//	buf_str_uid, buf_str_gid);
+		ret_val = chown(
+			strbuff_setFullPath( op_str_buff, path ),
+			buf_str_uid, buf_str_gid);
 	} else {
 		ret_val = EPERM;
 	}
@@ -613,10 +581,5 @@ int d2op_utimens( const char *path, const struct timespec tv_am[2] )
 	return ret_val;
 }
 
-
-
-
-
-/* links modify operations */
 
 /*************************************************************/
