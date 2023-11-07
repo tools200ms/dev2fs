@@ -41,53 +41,86 @@ void sys_init( 	const struct config *conf,
 				const struct mapper *map,
 					struct system *sys 			)
 {
-	struct fuse_operations *operations = operations = 
-								malloc( sizeof (struct fuse_operations) );
+	// Pre-check:
+	#ifdef DEBUG
+		/**
+		  * .fh variable defined in 'struct fuse_file_info fi' is
+		  * used to share 'struct file_handler' and
+		  * 'struct dir_handler' beatween fuse fs operations
+		  * 'calls.
+		  * 'Ensure that file_handler and dir_handler fits 'fi.fh'
+		  */
+		struct fuse_file_info fi;
 
-	memset( operations, 0, sizeof (struct fuse_operations) );
-	(*sys).operations = operations;
+		if( sizeof( fi.fh ) < sizeof (struct file_handler) ||
+			sizeof( fi.fh ) < sizeof (struct  dir_handler) ) {
+
+			MSG_DEBUG_( "sizeof ( sizeof( fi.fh ) )", "%lu", sizeof (sizeof( fi.fh )) );
+			MSG_DEBUG_( "sizeof ( struct file_handler )", "%lu", sizeof (struct file_handler) );
+			MSG_DEBUG_( "sizeof ( struct dir_handler )", "%lu", sizeof (struct dir_handler) );
+			MSG_ERROR_AND_EXIT("'struct file_handler' or 'struct dir_handler' does not fit into 'struct fuse_file_info .fh'");
+		}
+	#endif
+
+	struct fuse_operations *op = (*sys).operations = malloc( sizeof (struct fuse_operations) );
+
+	memset( op, 0, sizeof (struct fuse_operations) );
 
 	// assigns init and terminate functions - declared in operations.h,
 	//	defined in dev2fs.c
-	operations->init = dev2fs_init;
+	op->init = dev2fs_init;
 
 	// assigns file system statistics operations
-	operations->statfs		 = d2op_statfs;
+	op->statfs		 = d2op_statfs;
 
 	// assigns directory read operations
-	operations->opendir		= d2op_opendir;
-	operations->readdir		= d2op_readdir;
+	op->opendir		= d2op_opendir;
+	op->readdir		= d2op_readdir;
 
-	operations->releasedir	= d2op_releasedir;
+	op->releasedir	= d2op_releasedir;
 
 	// assigns directory modify operations
-	operations->mkdir		= d2op_mkdir;
-	operations->rmdir		= d2op_rmdir;
+	op->mkdir		= d2op_mkdir;
+	op->rmdir		= d2op_rmdir;
 
 	// assign file read operations
-	operations->open		= d2op_open;
-	operations->read		= d2op_read;
+	op->open		= d2op_open;
+	op->read		= d2op_read;
 
-	operations->release		= d2op_release;
+	op->release		= d2op_release;
 
 	// assign file modify operations
-	operations->create		 = d2op_create;
-	operations->write		 = d2op_write;
+	op->create		 = d2op_create;
+	op->write		 = d2op_write;
 
-	operations->truncate	 = d2op_truncate;
-	operations->flush		 = d2op_flush;
-	operations->unlink		 = d2op_unlink;
+	op->truncate	 = d2op_truncate;
+	op->unlink		 = d2op_unlink;
 
-	operations->rename		 = d2op_rename;
+	op->rename		 = d2op_rename;
 	//
 
 	// assigns attribute read & modify operations
-	operations->getattr 	= d2op_getattr;
-	operations->fgetattr 	= d2op_fgetattr;
-	operations->chmod 		= d2op_chmod;
-	operations->chown 		= d2op_chown;
-	operations->utimens 	= d2op_utimens;
+	op->getattr 	= d2op_getattr;
+	op->fgetattr 	= d2op_fgetattr;
+	op->chmod 		= d2op_chmod;
+	op->chown 		= d2op_chown;
+	op->utimens 	= d2op_utimens;
+	op->access		= d2op_access;
 
+
+	// flush/sync operations
+	op->flush		 = d2op_flush;
+	op->fsync		 = d2op_fsync;
+	op->fsyncdir	 = d2op_fsyncdir;
+
+	//SSH FS
+//		readlink   = sshfs_readlink,
+//		mknod      = sshfs_mknod,
+//		symlink    = sshfs_symlink,
+//		link       = sshfs_link,
+
+
+	// SSH FS
 
 	// assigns attribute modify operations
 	// assigns link read operations

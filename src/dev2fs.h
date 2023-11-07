@@ -62,6 +62,8 @@
 	  code after 'minor' updates.
 */
 #define DEV2FS_VERSION "1.2beta.4"
+// add debug messages and checks
+# define DEBUG "y"
 
 /* Detect if 'musl libc' is used, from:
  * https://stackoverflow.com/questions/58177815/how-to-actually-detect-musl-libc

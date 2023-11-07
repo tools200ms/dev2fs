@@ -337,6 +337,8 @@ int d2op_write( 	const char 					*path,
 
 	size_t write_bytes;
 	struct file_handler *f_handler;
+	(void) path;
+
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
 
 	//int fd = f_handler->fd;
@@ -391,6 +393,44 @@ int d2op_flush( 	const char 					*path,
 
 	MSG_DEBUG( 	"-----> end of flush" );
 	return 0;
+}
+
+int d2op_fsync(		const char 				*path,
+					int 					 isdatasync,
+					struct fuse_file_info 	*fi	) {
+	MSG_DEBUG( 		"=====> fsync operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
+
+	int ret_val;
+	struct file_handler *f_handler;
+
+	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
+
+	ret_val = (isdatasync != 0) ? fdatasync(f_handler->fd) :
+									fsync(f_handler->fd);
+
+
+	MSG_DEBUG( 	"-----> end of fsync" );
+	return ret_val;
+}
+
+int d2op_fsyncdir(	const char 				*path,
+					int 					 isdatasync,
+					struct fuse_file_info 	*fi	) {
+	MSG_DEBUG( 		"=====> fsyncdir operation called" );
+	MSG_DEBUG_STR( 	"      path", path );
+
+	int ret_val = 0;
+	//struct dir_handler *d_handler;
+
+	//memcpy( &d_handler, &(fi->fh), sizeof ( struct dir_handler * ) );
+
+	/*ret_val = (isdatasync != 0) ? fdatasync(d_handler->fd) :
+									fsync(d_handler->fd);
+
+
+	MSG_DEBUG( 	"-----> end of fsync" );*/
+	return ret_val;
 }
 
 int d2op_unlink( const char *path )
@@ -581,5 +621,16 @@ int d2op_utimens( const char *path, const struct timespec tv_am[2] )
 	return ret_val;
 }
 
+int d2op_access(const char *path, int mask) {
+	MSG_DEBUG( 	"=====> access operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+
+	int ret_val;
+
+	ret_val = access(strbuff_setFullPath( op_str_buff, path ), mask);
+
+	MSG_DEBUG( 	"-----> end of access" );
+	return ret_val;
+}
 
 /*************************************************************/

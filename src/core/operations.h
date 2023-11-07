@@ -77,12 +77,9 @@ int d2op_write( 		const char 					*path,
 							struct fuse_file_info	*fi 		);
 
 int d2op_truncate( 	const char 				*path, 
-							off_t						 length 	);
+					off_t					 length 	);
 
-int d2op_flush( 		const char 					*path, 
-							struct fuse_file_info	*fi 		);
-
-int d2op_unlink(		const char *path 						);
+int d2op_unlink(	const char *path 						);
 
 int d2op_rename( 	const char 			*src_path,
 					const char 			*dest_path );
@@ -103,8 +100,18 @@ int d2op_chown( const char *path, uid_t uid, gid_t gid);
 
 int d2op_utimens( const char *path, const struct timespec tv_am[2] );
 
+int d2op_access(const char *path, int mask);
 
-/* links read operations */
+/* flush/sync operations */
+int d2op_flush( 	const char 				*path,
+					struct fuse_file_info	*fi 		);
+
+int d2op_fsync(		const char 				*path,
+					int 					 isdatasync,
+					struct fuse_file_info 	*fi	);
+int d2op_fsyncdir(	const char 				*path,
+					int 					 isdatasync,
+					struct fuse_file_info 	*fi	);
 
 
 /* links modify operations */

@@ -37,7 +37,7 @@ StringBuffer *strbuff_init( char *base_path )
 		return NULL;
 
 	// Initialise:
-	int base_len = strlen( base_path );
+	size_t base_len = strlen( base_path );
 
 	char *p_buf =
 		malloc( (sizeof (char)) * (base_len + REL_PATH_DEFAULT_BUFFSIZE + 1) );
@@ -55,7 +55,6 @@ StringBuffer *strbuff_init( char *base_path )
 
 void strbuff_destroy( StringBuffer *buf )
 {
-	//if( pb->path_buff != NULL )
 	free( buf->p_buf );
 	free( buf );
 }
@@ -63,24 +62,23 @@ void strbuff_destroy( StringBuffer *buf )
 
 char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 {
-	int rp_len = strlen( rel_path );
+	size_t rp_len = strlen( rel_path );
 	MSG_DEBUG_STR( "     (old) base path", buf->p_buf );
 	MSG_DEBUG_DEC( "            rel len.", buf->rp_buf_len );
 
 	if( buf->rp_buf_len < rp_len ) {
-		char *p_buf;
-		int base_len = buf->rp_buf_start - buf->p_buf,
+		size_t base_len = buf->rp_buf_start - buf->p_buf,
 			new_rp_buf_len = rp_len + REL_PATH_BUFF_MARGIN;
 
-		(buf->rp_buf_start)[0] = '\0';
-		p_buf = malloc( base_len + (sizeof (char)) * (new_rp_buf_len + 1) );
+		//(buf->rp_buf_start)[0] = '\0';
+		buf->p_buf = realloc( buf->p_buf, base_len + (sizeof (char)) * (new_rp_buf_len + 1) );
 
-		if(p_buf == NULL)
+		if(buf->p_buf == NULL)
 			return NULL;
 
-		strcpy(p_buf, buf->p_buf);
-		free(buf->p_buf);
-		buf->p_buf = p_buf;
+		//strcpy(p_buf, buf->p_buf);
+		//free(buf->p_buf);
+		//buf->p_buf = p_buf;
 		buf->rp_buf_start = buf->p_buf + base_len;
 		buf->rp_buf_len = new_rp_buf_len;
 
@@ -92,53 +90,5 @@ char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 	MSG_DEBUG_STR( "     (new) base path", buf->p_buf );
 
 	return buf->p_buf;
-}
-
-//char *strbuff_add( StringBuffer *buf, char *str )
-char *strbuff_addPostfix( StringBuffer *buf, const char *str )
-{
-
-	return NULL;
-}
-
-StrBuff_base_idx strbuff_getBaseIdx( StringBuffer *buf )
-{
-	return 9;
-}
-
-
-// StrBuff_base_idx strbuff_setToBase( StringBuffer *buf )
-StrBuff_base_idx strbuff_resetRelativePath( StringBuffer *buf )
-{
-
-	return 0;
-}
-
-// void strbuff_alterBase( StringBuffer *buf, StrBuff_base_idx relative_idx )
-void strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx )
-{
-
-}
-
-// inline char *strbuff_getStrStartingFromIdx( struct path_buffer *pb, StrBuff_base_idx start_from )
-char *strbuff_getPathWithBase( struct path_buffer *pb, StrBuff_base_idx start_from )
-{
-	return 0;
-}
-
-char *strbuff_getRelativeStr( StringBuffer *buf )
-{
-	return 0;
-}
-
-// void strbuff_setNewBase( StringBuffer *buf, char *new_base_path )
-void setNewBase( StringBuffer *buf, char *new_base_path )
-{
-
-}
-
-void strbuff_printBase( StringBuffer *buf, FILE *stream )
-{
-
 }
 

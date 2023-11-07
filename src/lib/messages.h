@@ -1,5 +1,5 @@
 /* massages.h --- Definitions and function declarations for message printing.
- * Copyright (C) 2012 Mateusz Piwek
+ * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of Dev2FS.
  * 
@@ -124,6 +124,6 @@ void msgSetVerboseMode();
 			if( verbose_messages ) print_fun( stderr, args );
 
 #define MSG_ERROR_AND_EXIT( msg ) \
-			{fprintf( stderr, "%s: %s\n", "notTree", msg ); exit(1);}
+			{fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); exit(1);}
 
 #endif // _DEV2FS_200MS_NET__LIB_MESSAGES_H_

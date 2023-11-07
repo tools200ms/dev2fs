@@ -27,7 +27,7 @@
 typedef struct path_buffer
 {
 	char *p_buf, *rp_buf_start;
-	short int rp_buf_len;
+	size_t rp_buf_len;
 }
 StringBuffer;
 
@@ -49,11 +49,5 @@ StrBuff_base_idx strbuff_getBaseIdx( StringBuffer *buf );
 StrBuff_base_idx strbuff_resetRelativePath( StringBuffer *buf );
 void 			 strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx );
 
-char * strbuff_getPathWithBase( StringBuffer *buf, StrBuff_base_idx start_from );
-char * strbuff_getRelativeStr( StringBuffer *buf );
-
-void 	setNewBase( StringBuffer *buf, char *new_base_path );
-
-void 	strbuff_printBase( StringBuffer *buf, FILE *stream );
 
 #endif // _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_
