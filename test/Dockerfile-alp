@@ -8,7 +8,7 @@ ENV RUNAME='test'
 ENV RUNUID=3300
 ENV RUNGID=3300
 
-ENV PCKGS_BASE='bash'
+ENV PCKGS_BASE='bash ncurses-terminfo'
 ENV PCKGS_DEV='make gcc libc-dev fuse-dev'
 
 RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV
@@ -16,7 +16,9 @@ RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV
 RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
     printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $DUNAME -u $DEVUID -g $DEVGID
 RUN RUNHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
-    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -u $RUNUID -g $RUNGID
+    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -u $RUNUID -g $RUNGID && \
+    su $RUNAME -c "mkdir ~/mnt"
+
 
 USER $DUNAME
 WORKDIR /home/$DUNAME

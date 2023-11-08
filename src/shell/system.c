@@ -97,7 +97,7 @@ void sys_init( 	const struct config *conf,
 	op->unlink		 = d2op_unlink;
 
 	op->rename		 = d2op_rename;
-	//
+	op->mknod		 = d2op_mknod;
 
 	// assigns attribute read & modify operations
 	op->getattr 	= d2op_getattr;
@@ -113,14 +113,11 @@ void sys_init( 	const struct config *conf,
 	op->fsync		 = d2op_fsync;
 	op->fsyncdir	 = d2op_fsyncdir;
 
-	//SSH FS
-//		readlink   = sshfs_readlink,
-//		mknod      = sshfs_mknod,
-//		symlink    = sshfs_symlink,
-//		link       = sshfs_link,
+	// link read/modify operations:
+	op->readlink   = d2op_readlink;
+	op->symlink    = d2op_symlink;
+	op->link       = d2op_link;
 
-
-	// SSH FS
 
 	// assigns attribute modify operations
 	// assigns link read operations

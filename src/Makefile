@@ -31,10 +31,10 @@ endif
 
 #all: ${OUTPUT}
 
-${OUTPUT} : ${OBJS}
+${OUTPUT}: ${OBJS}
 	${CC} ${OBJS} ${LIBS} -o ${OUTPUT}
 
-compile : ${OUTPUT}
+compile: ${OUTPUT}
 
 testrun: compile
 	cd ../test && ./test.sh prepare

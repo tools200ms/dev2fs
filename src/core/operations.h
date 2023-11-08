@@ -24,14 +24,13 @@
 
 void operations_init( const struct loader *load, StringBuffer *str_buff );
 
-/* teaFS initialize functions, defined in teafs.c */
+// Initialize function, defined in dev2fs.c
 void *dev2fs_init( struct fuse_conn_info *conn );
 
-/* file system statistics */
+// filesystem statistics:
 int d2op_statfs( const char *path, struct statvfs *buf );
 
-/* directories read operations */
-
+// directory read operations:
 int d2op_opendir( 	const char 				*path,
 					struct fuse_file_info 	*fi 		);
 
@@ -44,15 +43,12 @@ int d2op_readdir(	const char 				*path,
 int d2op_releasedir( 	const char 				*path,
 						struct fuse_file_info 	*fi );
 
-/* directories modify operations */
-
+// directory modify operations:
 int d2op_mkdir( 		const char 				*path,
 						mode_t 					 mode );
-
 int d2op_rmdir(		const char	*path );
 
-/* files read operations */
-
+// file read operations:
 int d2op_open(		const char 				*path,
 					struct fuse_file_info 	*fi		);
 
@@ -65,7 +61,7 @@ int d2op_read(		const char 				*path,
 int d2op_release( 	const char 				*path,
 					struct fuse_file_info 	*fi	);
 
-/* files modify operations */
+// file modify operations:
 int d2op_create( 	const char 					*path, 
 					mode_t						 mode,
 					struct fuse_file_info 	*fi );
@@ -84,8 +80,9 @@ int d2op_unlink(	const char *path 						);
 int d2op_rename( 	const char 			*src_path,
 					const char 			*dest_path );
 
-/* attributes read & modify operations */
+int d2op_mknod(const char *path, mode_t mode, dev_t rdev);
 
+// attribute read & modify operations:
 int d2op_getattr(	const char 					*path,
 						struct stat 			*stbuf );
 
@@ -102,7 +99,7 @@ int d2op_utimens( const char *path, const struct timespec tv_am[2] );
 
 int d2op_access(const char *path, int mask);
 
-/* flush/sync operations */
+// flush/sync operations:
 int d2op_flush( 	const char 				*path,
 					struct fuse_file_info	*fi 		);
 
@@ -114,6 +111,9 @@ int d2op_fsyncdir(	const char 				*path,
 					struct fuse_file_info 	*fi	);
 
 
-/* links modify operations */
+// link read/modify operations:
+int d2op_readlink(const char *path, char *linkbuf, size_t size);
+int d2op_symlink(const char *from, const char *to);
+int d2op_link(const char *from, const char *to);
 
 #endif // _DEV2FS_200MS_NET__CORE_OPERATIONS_H_

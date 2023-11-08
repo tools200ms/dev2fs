@@ -453,7 +453,6 @@ int d2op_unlink( const char *path )
 	//relesePath( full_path );
 }
 
-/* files and directories modify operations */
 int d2op_rename( const char *src_path, const char *dest_path )
 {
 	MSG_DEBUG( 	"=====> rename operation called" );
@@ -483,6 +482,30 @@ int d2op_rename( const char *src_path, const char *dest_path )
 	return ret_val;
 }
 
+int d2op_mknod(const char *path, mode_t mode, dev_t rdev) {
+	MSG_DEBUG( 	"=====> mknod operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+	char *full_path = strbuff_setFullPath( op_str_buff, path );
+	int ret_val;
+
+	if( mode & S_IFREG ) {
+		MSG_DEBUG( 	"      Regular file" );
+	} else if( mode & S_IFCHR ) {
+		MSG_DEBUG( 	"      Character device" );
+	} else if( mode & S_IFBLK ) {
+		MSG_DEBUG( 	"      Block device" );
+	} else if( mode & S_IFIFO ) {
+		MSG_DEBUG( 	"      FIFO" );
+	} else if( mode & S_IFSOCK ) {
+		MSG_DEBUG( 	"      Socket" );
+	}
+
+	ret_val = mknod(full_path, mode, rdev);
+
+	MSG_DEBUG( 	"-----> end of mknod" );
+
+	return ret_val;
+}
 
 /* attributes read operations */
 
@@ -631,6 +654,53 @@ int d2op_access(const char *path, int mask) {
 
 	MSG_DEBUG( 	"-----> end of access" );
 	return ret_val;
+}
+
+
+// link read/modify operations:
+int d2op_readlink(const char *path, char *linkbuf, size_t size) {
+	MSG_DEBUG( 	"=====> readlink operation called" );
+	MSG_DEBUG_STR( 	"   path", path );
+
+	ssize_t linkbuf_len;
+
+	linkbuf_len = readlink(strbuff_setFullPath( op_str_buff, path ), linkbuf, size);
+
+	if(linkbuf_len == size) {
+		return EINVAL;
+	}
+
+	linkbuf[linkbuf_len] = '\0';
+
+	MSG_DEBUG_STR( 	"   linkbuf", linkbuf );
+
+	MSG_DEBUG( 	"-----> end of access" );
+	return 0;
+}
+
+int d2op_symlink(const char *from, const char *to) {
+	MSG_DEBUG( 	"=====> symlink operation called" );
+	MSG_DEBUG_STR( 	"   from", from );
+	MSG_DEBUG_STR( 	"   to  ", to );
+
+	char *full_path = strbuff_setFullPath( op_str_buff, to );
+	int ret_val;
+
+	if( (ret_val = symlink(from, full_path)) != 0 ) {
+		return ret_val;
+	}
+
+	lchown( full_path, buf_str_uid, buf_str_gid );
+
+	MSG_DEBUG( 	"-----> end of symlink" );
+	return ret_val;
+}
+
+int d2op_link(const char *from, const char *to) {
+	MSG_DEBUG( 	"=====> link operation called [not allowed]" );
+
+	MSG_DEBUG( 	"-----> end of link" );
+	return EPERM;
 }
 
 /*************************************************************/
