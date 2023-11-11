@@ -21,10 +21,11 @@
 #ifndef _DEV2FS_200MS_NET__LIB_MESSAGES_H_
 #define _DEV2FS_200MS_NET__LIB_MESSAGES_H_
 
+#include <stdio.h>
 
 #include "messages_en.h"
 
-// #include "debug.h"
+#include "debug.h"
 
 /**
 	definitions of debug macros, it can be enabled with -DDEBUG gcc option or 

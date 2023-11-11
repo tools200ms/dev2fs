@@ -43,7 +43,7 @@
 
 #include "../shell/mapper.h"
 
-#include "resources.h"
+#include "stats.h"
 
 #include "engine.h"
 #include "operations.h"

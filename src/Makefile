@@ -58,25 +58,23 @@ depend:
 dev2fs.o: dev2fs.h lib/messages.h lib/messages_en.h shell/config.h
 dev2fs.o: lib/messages.h shell/loader.h shell/mapper.h shell/config.h
 dev2fs.o: shell/loader.h lib/stringBuffer.h
-dev2fs.o: core/map.h lib/list.h core/resources.h core/map.h
+dev2fs.o: lib/list.h core/stats.h
 dev2fs.o: shell/system.h
 core/engine.o: lib/messages.h core/engine.h
-core/engine.o: core/map.h
-core/map.o: lib/messages.h core/map.h
 core/operations.o: lib/messages.h dev2fs.h shell/mapper.h shell/config.h
 core/operations.o: shell/loader.h lib/stringBuffer.h
-core/operations.o: core/map.h lib/list.h
-core/operations.o: core/resources.h core/map.h core/resources.h core/engine.h
+core/operations.o: lib/list.h
+core/operations.o: core/stats.h core/engine.h
 core/operations.o: core/operations.h core/engine.h
-core/resources.o: core/resources.h lib/messages.h
+core/stats.o: core/stats.h lib/messages.h
 shell/config.o: dev2fs.h shell/config.h
 shell/loader.o: lib/messages.h shell/config.h shell/loader.h core/engine.h
 shell/mapper.o: lib/messages.h shell/mapper.h shell/config.h shell/loader.h
 shell/mapper.o: lib/stringBuffer.h
-shell/mapper.o: core/map.h lib/list.h core/resources.h core/map.h
+shell/mapper.o: lib/list.h core/stats.h
 shell/system.o: dev2fs.h shell/config.h shell/mapper.h shell/loader.h
 shell/system.o: lib/stringBuffer.h
-shell/system.o: core/map.h lib/list.h core/resources.h core/map.h
+shell/system.o: lib/list.h core/stats.h
 shell/system.o: shell/system.h core/operations.h core/engine.h
 lib/list.o: lib/list.h
 lib/messages.o: dev2fs.h lib/messages.h lib/messages_en.h

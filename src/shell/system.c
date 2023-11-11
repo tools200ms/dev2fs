@@ -27,7 +27,6 @@
 #include <fuse.h>
 /* *********** */
 
-#include "config.h"
 #include "mapper.h"
 #include "system.h"
 
@@ -36,8 +35,7 @@
 #include "../core/engine.h"
 
 
-void sys_init( 	const struct config *conf, 
-				const struct loader *load,
+void sys_init( 	const struct loader *load,
 				const struct mapper *map,
 					struct system *sys 			)
 {
@@ -117,11 +115,6 @@ void sys_init( 	const struct config *conf,
 	op->readlink   = d2op_readlink;
 	op->symlink    = d2op_symlink;
 	op->link       = d2op_link;
-
-
-	// assigns attribute modify operations
-	// assigns link read operations
-	// assigns link modify operations
 
 
 	//engine_setup( NULL, map->map_blank_node );

@@ -26,13 +26,10 @@
 
 #include "../lib/stringBuffer.h"
 
-#include "../core/map.h"
-
 
 struct mapper
 {
-	MapNode *map_blank_node;
-	
+
 	StringBuffer *str_buff;
 };
 

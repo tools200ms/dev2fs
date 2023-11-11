@@ -1,4 +1,4 @@
-/* teafs.c --- Calls all necessary functions to launch and terminate program.
+/* dev2fs.c --- Calls all necessary functions to launch and terminate program.
  * Copyright (C) 2012, 2023 Mateusz Piwek
  * 
  * This file is part of Dev2FS.
@@ -126,7 +126,7 @@ int main( int argc, char *argv[] )
 		return 1;
 	memset( d2_ref.sys, 0, sizeof (struct system) );
 
-	sys_init( d2_ref.conf, d2_ref.load, d2_ref.map, d2_ref.sys );
+	sys_init( d2_ref.load, d2_ref.map, d2_ref.sys );
 
 
 	MSG_VERBOSE( "DEV2FS: Starting FUSE" );

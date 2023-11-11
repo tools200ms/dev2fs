@@ -23,7 +23,6 @@
 
 #include <dirent.h>
 
-#include "map.h"
 
 struct file_handler
 {

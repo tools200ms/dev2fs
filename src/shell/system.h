@@ -30,10 +30,9 @@ struct system
 /**
 	prepares fuse_operations
 */
-void sys_init( 	const struct config *conf, 
-						const struct loader *load, 
-						const struct mapper *map, 
-						struct system *sys 			);
+void sys_init( 	const struct loader *load,
+				const struct mapper *map,
+				struct system *sys 			);
 
 void sys_release( struct system *sys );
 

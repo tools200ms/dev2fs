@@ -32,7 +32,7 @@
 
 #define MSG_PROGRAM_USAGE 		"[-m \"file/dir.\">\"mnt. relative path\" ...] \"mount point\" [options]"
 
-#define MSG_VERSION_INFO 		"teaFS filesystem version"
+#define MSG_VERSION_INFO 		"Dev2FS filesystem version"
 
 
 #define MSG_OPTIONS_HEADER		"usage: %s %s\n%s\n%s\n"

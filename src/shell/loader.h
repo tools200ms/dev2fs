@@ -24,6 +24,7 @@
 struct loader
 {
 	char *mnt_path, *str_path;
+
 	int str_dir_path_length;
 
 	uid_t str_uid, mnt_uid;

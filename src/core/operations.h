@@ -17,7 +17,6 @@
  * along with Dev2FS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 #ifndef _DEV2FS_200MS_NET__CORE_OPERATIONS_H_
 #define _DEV2FS_200MS_NET__CORE_OPERATIONS_H_
 
