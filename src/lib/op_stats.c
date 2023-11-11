@@ -1,4 +1,4 @@
-/* resources.c --- implementaion of statistics of fs operations.
+/* stats.c --- implementaion of statistics of fs operations.
  * Copyright (C) 2023 Mateusz Piwek
  * 
  * This file is part of Dev2FS.
@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "stats.h"
+#include "op_stats.h"
 #include "../lib/messages.h"
 
 
@@ -29,18 +29,41 @@ Stats *stat_init() {
 	Stats *s = malloc( sizeof (Stats) );
 
 	memset( s, 0, sizeof (Stats) );
+	s->t_s = malloc( sizeof(struct timespec) );
+	s->t_e = malloc( sizeof(struct timespec) );
+	s->run = NORUN;
 
 	return s;
 }
 
-inline void op_start(Stats *s) {
+void stat_op_start(const Stats *s, char *op_name, const char *path) {
 
-	clock_gettime(CLOCK_MONOTONIC, &(s->t_s));
+	if( s->run == RUN ) {
+		//Raise panic
+		fprintf( stdout, "Not atomic call of: %s: %s", op_name, path);
+		exit(11);
+	}
+
+	//s->run = RUN;
+	fprintf( stdout, "%s: %s", op_name, path );
+	clock_gettime(CLOCK_MONOTONIC, s->t_s);
 }
 
-inline void op_end(Stats *s) {
+void stat_op_end(const Stats *s) {
 
-	clock_gettime(CLOCK_MONOTONIC, &(s->t_e));
+	clock_gettime(CLOCK_MONOTONIC, s->t_e);
+
+	time_t sec_el = (s->t_e)->tv_sec - (s->t_s)->tv_sec;
+	// elapsed nsec
+	long int nsec_el = (s->t_e)->tv_nsec - (s->t_s)->tv_nsec;
+	if(nsec_el < 0) {
+		--sec_el;
+		nsec_el += 1000000000;
+	}
+
+	fprintf(stdout, "(sec nsec)\n");//, sec_el, nsec_el);
+
+	//s->run = NORUN;
 }
 
 void stat_destroy(Stats *s) {

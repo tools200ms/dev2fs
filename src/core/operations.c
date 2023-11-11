@@ -43,7 +43,7 @@
 
 #include "../shell/mapper.h"
 
-#include "stats.h"
+#include "../lib/op_stats.h"
 
 #include "engine.h"
 #include "operations.h"
@@ -51,6 +51,7 @@
 
 static StringBuffer *op_str_buff;
 const struct loader *op_load;
+Stats *op_stat;
 
 uid_t buf_str_uid, buf_mnt_uid;
 gid_t buf_str_gid, buf_mnt_gid;
@@ -58,6 +59,8 @@ gid_t buf_str_gid, buf_mnt_gid;
 void operations_init( const struct loader *load, StringBuffer *str_buff )
 {
 	op_load = load;
+	op_stat = stat_init();
+
 	buf_str_uid = load->str_uid;
 	buf_mnt_uid = load->mnt_uid;
 	buf_str_gid = load->str_gid;
@@ -66,6 +69,11 @@ void operations_init( const struct loader *load, StringBuffer *str_buff )
 	op_str_buff = str_buff;
 }
 
+void operations_destroy() {
+	if(op_stat != NULL) {
+		stat_destroy(op_stat);
+	}
+}
 
 /* Dev2FS operations */
 
@@ -99,11 +107,7 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 int d2op_opendir( const char 					*path,
 							struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG( 		"=====> opendir operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
-
-	/*******************************************************/
-	/*******************************************************/
+	stat_op_start(op_stat, "OPENDIR", path);
 
 	struct dir_handler *d_handler = malloc( sizeof ( struct dir_handler ) );
 	//char *full_path = updatePath( path );
@@ -118,7 +122,7 @@ int d2op_opendir( const char 					*path,
 
 	memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
 
-	MSG_DEBUG( 	"-----> end of opendir" );
+	stat_op_end(op_stat);
 	return 0;
 }
 

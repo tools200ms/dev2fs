@@ -18,20 +18,23 @@
  */
 
 
-#ifndef _DEV2FS_200MS_NET__CORE_STATS_H_
-#define _DEV2FS_200MS_NET__CORE_STATS_H_
+#ifndef _DEV2FS_200MS_NET__LIB_OPSTATS_H_
+#define _DEV2FS_200MS_NET__LIB_OPSTATS_H_
 
 #include <time.h>
 
+enum op_state {RUN, NORUN};
+
 typedef struct stats {
-	struct timespec t_s, t_e;
+	struct timespec *t_s, *t_e;
+	enum op_state run;
 } Stats;
 
 Stats *stat_init();
 void stat_destroy(Stats *s);
 
-inline void op_start(Stats *s);
-inline void op_end(Stats *s);
+void stat_op_start(const Stats *s, char *op_name, const char *path);
+void stat_op_end(const Stats *s);
 
 
 void stat_opendir();
@@ -62,5 +65,4 @@ void stat_symlink();
 void stat_link();
 
 
-
-#endif // _DEV2FS_200MS_NET__CORE_STATS_H_
+#endif // _DEV2FS_200MS_NET__LIB_OPSTATS_H_

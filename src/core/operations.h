@@ -22,6 +22,7 @@
 
 
 void operations_init( const struct loader *load, StringBuffer *str_buff );
+void operations_destroy();
 
 // Initialize function, defined in dev2fs.c
 void *dev2fs_init( struct fuse_conn_info *conn );
