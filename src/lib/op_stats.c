@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "op_stats.h"
 #include "../lib/messages.h"
@@ -36,18 +37,34 @@ Stats *stat_init() {
 	return s;
 }
 
-void stat_op_start(const Stats *s, char *op_name, const char *path) {
+void stat_op_start(const Stats* s, char* op_name, int argc, ...)
+{
+	char *path, *path2 = NULL;
+	char *format = "%s: %s";
 
 	if( s->run == RUN ) {
 		//Raise panic
-		fprintf( stdout, "Not atomic call of: %s: %s", op_name, path);
+		//fprintf( stdout, "No-atomic call of: %s: %s", op_name, path);
 		exit(11);
 	}
 
+	va_list op_data;
+	va_start(op_data, argc);
+
+	path = va_arg(op_data, char *);
+	if(argc == 2) {
+		path2 = va_arg(op_data, char *);
+		format = "%s: %s:%s";
+	}
+
+	va_end(op_data);
+
+	fprintf( stdout, format, op_name, path, path2 );
+
 	//s->run = RUN;
-	fprintf( stdout, "%s: %s", op_name, path );
 	clock_gettime(CLOCK_MONOTONIC, s->t_s);
 }
+
 
 void stat_op_end(const Stats *s) {
 

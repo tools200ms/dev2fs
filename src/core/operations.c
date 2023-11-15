@@ -649,22 +649,20 @@ int d2op_utimens( const char *path, const struct timespec tv_am[2] )
 }
 
 int d2op_access(const char *path, int mask) {
-	MSG_DEBUG( 	"=====> access operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE(op_stat, "ACCESS", path);
 
 	int ret_val;
 
 	ret_val = access(strbuff_setFullPath( op_str_buff, path ), mask);
 
-	MSG_DEBUG( 	"-----> end of access" );
+	MSG_OPSTAT_SUMMARY(op_stat);
 	return ret_val;
 }
 
 
 // link read/modify operations:
 int d2op_readlink(const char *path, char *linkbuf, size_t size) {
-	MSG_DEBUG( 	"=====> readlink operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE( op_stat, "READLINK", path );
 
 	ssize_t linkbuf_len;
 
@@ -676,16 +674,13 @@ int d2op_readlink(const char *path, char *linkbuf, size_t size) {
 
 	linkbuf[linkbuf_len] = '\0';
 
-	MSG_DEBUG_STR( 	"   linkbuf", linkbuf );
 
-	MSG_DEBUG( 	"-----> end of access" );
+	MSG_OPSTAT_SUMMARY(op_stat);
 	return 0;
 }
 
 int d2op_symlink(const char *from, const char *to) {
-	MSG_DEBUG( 	"=====> symlink operation called" );
-	MSG_DEBUG_STR( 	"   from", from );
-	MSG_DEBUG_STR( 	"   to  ", to );
+	MSG_OPSTAT_VERBOSE( op_stat, "SYMLINK", from, to );
 
 	char *full_path = strbuff_setFullPath( op_str_buff, to );
 	int ret_val;
@@ -696,7 +691,7 @@ int d2op_symlink(const char *from, const char *to) {
 
 	lchown( full_path, buf_str_uid, buf_str_gid );
 
-	MSG_DEBUG( 	"-----> end of symlink" );
+	MSG_OPSTAT_SUMMARY(op_stat);
 	return ret_val;
 }
 

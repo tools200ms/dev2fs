@@ -33,9 +33,14 @@ typedef struct stats {
 Stats *stat_init();
 void stat_destroy(Stats *s);
 
-void stat_op_start(const Stats *s, char *op_name, const char *path);
+void stat_op_start(const Stats *s, char *op_name, int argc, ...);
 void stat_op_end(const Stats *s);
 
+#define MSG_OPSTAT_VERBOSE(s, op_name, ...) \
+	stat_op_start(s, op_name, ...);
+
+# define MSG_OPSTAT_SUMMARY(s) \
+	stat_op_end(s);
 
 void stat_opendir();
 void stat_readdir();
