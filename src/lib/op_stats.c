@@ -37,7 +37,7 @@ Stats *stat_init() {
 	return s;
 }
 
-void stat_op_start(const Stats* s, char* op_name, int argc, ...)
+void stat_op_start(Stats* s, char* op_name, int argc, ...)
 {
 	char *path, *path2 = NULL;
 	char *format = "%s: %s";
@@ -47,6 +47,8 @@ void stat_op_start(const Stats* s, char* op_name, int argc, ...)
 		//fprintf( stdout, "No-atomic call of: %s: %s", op_name, path);
 		exit(11);
 	}
+
+	s->run = RUN;
 
 	va_list op_data;
 	va_start(op_data, argc);
@@ -61,12 +63,17 @@ void stat_op_start(const Stats* s, char* op_name, int argc, ...)
 
 	fprintf( stdout, format, op_name, path, path2 );
 
-	//s->run = RUN;
 	clock_gettime(CLOCK_MONOTONIC, s->t_s);
 }
 
 
-void stat_op_end(const Stats *s) {
+void stat_op_end(Stats *s) {
+
+	if( s->run == NORUN ) {
+		//Raise panic
+		//fprintf( stdout, "No-atomic call of: %s: %s", op_name, path);
+		exit(12);
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, s->t_e);
 
@@ -80,7 +87,7 @@ void stat_op_end(const Stats *s) {
 
 	fprintf(stdout, "(sec nsec)\n");//, sec_el, nsec_el);
 
-	//s->run = NORUN;
+	s->run = NORUN;
 }
 
 void stat_destroy(Stats *s) {

@@ -82,8 +82,7 @@ void operations_destroy() {
  */
 int d2op_statfs( const char *path, struct statvfs *buf )
 {
-	MSG_DEBUG( 		"=====> statfs operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("STATFS", path);
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
@@ -96,7 +95,7 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 
 	//relesePath( full_path );
 
-	MSG_DEBUG( 	"-----> end of statfs" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
@@ -104,26 +103,28 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 	function is forwarding fs call, fi->fh is set
 	for readdir and releasedir operations.
  */
-int d2op_opendir( const char 					*path,
-							struct fuse_file_info 	*fi 		)
+int d2op_opendir( const char *path,
+				struct fuse_file_info 	*fi )
 {
-	stat_op_start(op_stat, "OPENDIR", path);
+	MSG_OPSTAT_VERBOSE("OPENDIR", path);
 
 	struct dir_handler *d_handler = malloc( sizeof ( struct dir_handler ) );
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
+	int ret_val = 0;
 
-	if( (d_handler->dir_ptr = opendir( full_path )) == NULL )
-	{
+	if((d_handler->dir_ptr = opendir(full_path)) != NULL) {
+		memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
+	}
+	else {
 		perror( msg_getProgramName() );
+		ret_val = -1;
 	}
 
 	//relesePath( full_path );
 
-	memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
-
-	stat_op_end(op_stat);
-	return 0;
+	MSG_OPSTAT_SUMMARY();
+	return ret_val;
 }
 
 /* Directory readdir operation,
@@ -131,13 +132,12 @@ int d2op_opendir( const char 					*path,
 	read directory.
  */
 int d2op_readdir(	const char 					*path,
-							void 					*buf,
-							fuse_fill_dir_t 		filler,
-							off_t 					offset,
-							struct fuse_file_info 	*fi	)
+						void 					*buf,
+						fuse_fill_dir_t 		filler,
+						off_t 					offset,
+						struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG( 		"=====> readdir operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("READDIR", path);
 
 	struct dir_handler *d_handler;
 	struct dirent *dir_entry;
@@ -149,8 +149,7 @@ int d2op_readdir(	const char 					*path,
 		filler( buf, dir_entry->d_name, NULL, 0 );
 	}
 
-	MSG_DEBUG( 	"-----> end of readdir" );
-
+	MSG_OPSTAT_SUMMARY();
 	return 0;
 }
 
@@ -160,8 +159,7 @@ int d2op_readdir(	const char 					*path,
 int d2op_releasedir( 	const char 					*path,
 						struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG( 		"=====> releasedir operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("RELEASEDIR", path);
 
 	struct dir_handler *d_handler;
 
@@ -171,8 +169,7 @@ int d2op_releasedir( 	const char 					*path,
 
 	free( d_handler );
 
-	MSG_DEBUG( 	"-----> end of releasedir" );
-
+	MSG_OPSTAT_SUMMARY();
 	return 0;
 }
 
@@ -184,8 +181,7 @@ int d2op_releasedir( 	const char 					*path,
 int d2op_mkdir( 	const char 					*path,
 						mode_t 					mode 	)
 {
-	MSG_DEBUG( 	"=====> mkdir operation called" );
-	MSG_DEBUG_STR( 			"      path", path );
+	MSG_OPSTAT_VERBOSE("MKDIR", path );
 
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -193,14 +189,13 @@ int d2op_mkdir( 	const char 					*path,
 	ret_val = mkdir( full_path, mode );
 	chown( full_path, buf_str_uid, buf_str_gid );
 
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_rmdir( const char *path )
 {
-	MSG_DEBUG(		"=====> rmdir operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
-
+	MSG_OPSTAT_VERBOSE("RMDIR", path );
 
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -209,7 +204,7 @@ int d2op_rmdir( const char *path )
 			perror( msg_getProgramName() );
 	}
 
-	MSG_DEBUG( 	"-----> end of rmdir" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
@@ -218,8 +213,7 @@ int d2op_rmdir( const char *path )
 int d2op_open(	const char 	*path,
 						struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG( 	"=====> open operation called" );
-	MSG_DEBUG_STR( 			"      path", path );
+	MSG_OPSTAT_VERBOSE("OPEN", path );
 
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -243,7 +237,7 @@ int d2op_open(	const char 	*path,
 
 	//relesePath( full_path );
 
-	MSG_DEBUG( 	"-----> end of open" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
@@ -253,11 +247,8 @@ int d2op_read(	const char 					*path,
 						off_t 						offset,
 						struct fuse_file_info 	*fi	)
 {
-	MSG_DEBUG( 		"=====> read operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("READ", path );
 
-
-	MSG_DEBUG( 	"=====> read operation called" );
 	size_t read_bytes;
 
 	MSG_DEBUG_( "      offset", "%d", (int)offset );
@@ -278,7 +269,7 @@ int d2op_read(	const char 					*path,
 
 	MSG_DEBUG_( "      read_bytes", "%lu", read_bytes );
 
-	MSG_DEBUG( 	"-----> end of read" );
+	MSG_OPSTAT_SUMMARY();
 	return read_bytes;
 }
 
@@ -286,8 +277,7 @@ int d2op_release( 	const char 					*path,
 							struct fuse_file_info 	*fi	 )
 {
 	//char *full_path = updatePath( path );
-	MSG_DEBUG( 		"=====> release operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("RELEASE", path);
 	//relesePath( full_path );
 
 	struct file_handler *f_handler; // = (struct file_handler *)(fi->fh);
@@ -297,18 +287,17 @@ int d2op_release( 	const char 					*path,
 	close( f_handler->fd );
 	free( f_handler );
 
-	MSG_DEBUG( 	"-----> end of release" );
+	MSG_OPSTAT_SUMMARY();
 	return 0; // ignored by FUSE
 }
 
 /* file modify operations */
 
 int d2op_create( 	const char 					*path,
-							mode_t						 mode,
+							mode_t				 mode,
 							struct fuse_file_info 	*fi 		)
 {
-	MSG_DEBUG( 	"=====> create operation called" );
-	MSG_DEBUG_STR( 		"      path", path );
+	MSG_OPSTAT_VERBOSE("CREATE", path);
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
@@ -326,7 +315,7 @@ int d2op_create( 	const char 					*path,
 
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
 
-	MSG_DEBUG( 	"-----> end of create" );
+	MSG_OPSTAT_SUMMARY();
 	return 0;
 }
 
@@ -336,8 +325,7 @@ int d2op_write( 	const char 					*path,
 						off_t 						 offset,
 						struct fuse_file_info	*fi 		)
 {
-	MSG_DEBUG( 	"=====> write operation called" );
-	MSG_DEBUG_STR( 		"      path", path );
+	MSG_OPSTAT_VERBOSE("WRITE", path);
 
 	size_t write_bytes;
 	struct file_handler *f_handler;
@@ -358,15 +346,14 @@ int d2op_write( 	const char 					*path,
 
 	MSG_DEBUG_( 			"      write_bytes", "%lu", write_bytes );
 
-	MSG_DEBUG( 	"-----> end of write" );
+	MSG_OPSTAT_SUMMARY();
 	return write_bytes;
 }
 
 int d2op_truncate( 	const char 				*path,
 							off_t						 length 	)
 {
-	MSG_DEBUG( 	"=====> truncate operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("TRUNCATE", path);
 
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -379,15 +366,14 @@ int d2op_truncate( 	const char 				*path,
 
 	//relesePath( full_path );
 
-	MSG_DEBUG( 	"-----> end of truncate" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_flush( 	const char 					*path,
-						struct fuse_file_info	*fi 		)
+					struct fuse_file_info	*fi 		)
 {
-	MSG_DEBUG( 		"=====> flush operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+	MSG_OPSTAT_VERBOSE("FLUSH", path);
 
 	//struct file_handler *f_handler;
 	//memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
@@ -395,15 +381,15 @@ int d2op_flush( 	const char 					*path,
 	//flush
 
 
-	MSG_DEBUG( 	"-----> end of flush" );
+	MSG_OPSTAT_SUMMARY();
 	return 0;
 }
 
 int d2op_fsync(		const char 				*path,
 					int 					 isdatasync,
 					struct fuse_file_info 	*fi	) {
-	MSG_DEBUG( 		"=====> fsync operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+
+	MSG_OPSTAT_VERBOSE("FSYNC", path);
 
 	int ret_val;
 	struct file_handler *f_handler;
@@ -414,34 +400,32 @@ int d2op_fsync(		const char 				*path,
 									fsync(f_handler->fd);
 
 
-	MSG_DEBUG( 	"-----> end of fsync" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_fsyncdir(	const char 				*path,
 					int 					 isdatasync,
 					struct fuse_file_info 	*fi	) {
-	MSG_DEBUG( 		"=====> fsyncdir operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
+
+	MSG_OPSTAT_VERBOSE("FSYNCDIR", path);
 
 	int ret_val = 0;
-	//struct dir_handler *d_handler;
+	int fd;
+	struct dir_handler *d_handler;
 
-	//memcpy( &d_handler, &(fi->fh), sizeof ( struct dir_handler * ) );
+	memcpy( &d_handler, &(fi->fh), sizeof ( struct dir_handler * ) );
+	fd = dirfd(d_handler->dir_ptr);
 
-	/*ret_val = (isdatasync != 0) ? fdatasync(d_handler->fd) :
-									fsync(d_handler->fd);
+	ret_val = (isdatasync != 0) ? fdatasync(fd) : fsync(fd);
 
-
-	MSG_DEBUG( 	"-----> end of fsync" );*/
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_unlink( const char *path )
 {
-	MSG_DEBUG( 	"=====> unlink operation called" );
-	MSG_DEBUG_STR( 	"      path", path );
-	//char *full_path = updatePath( path );
+	MSG_OPSTAT_VERBOSE("UNLINK", path);
 
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
@@ -451,17 +435,13 @@ int d2op_unlink( const char *path )
 		perror( msg_getProgramName() );
 	}
 
-	MSG_DEBUG( 	"-----> end of unlink" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
-
-	//relesePath( full_path );
 }
 
 int d2op_rename( const char *src_path, const char *dest_path )
 {
-	MSG_DEBUG( 	"=====> rename operation called" );
-	MSG_DEBUG_STR( 			"      src_path", src_path );
-	MSG_DEBUG_STR( 			"      dest_path", dest_path );
+	MSG_OPSTAT2_VERBOSE("RENAME", src_path, dest_path);
 
 	int ret_val;
 
@@ -482,13 +462,13 @@ int d2op_rename( const char *src_path, const char *dest_path )
 
 	free(src_full_path);
 
-	MSG_DEBUG( 	"-----> end of rename" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_mknod(const char *path, mode_t mode, dev_t rdev) {
-	MSG_DEBUG( 	"=====> mknod operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE("MKNOD", path);
+
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
 
@@ -506,22 +486,21 @@ int d2op_mknod(const char *path, mode_t mode, dev_t rdev) {
 
 	ret_val = mknod(full_path, mode, rdev);
 
-	MSG_DEBUG( 	"-----> end of mknod" );
-
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 /* attributes read operations */
 
 int d2op_getattr(	const char 	*path,
-							struct stat *stbuf	)
+					struct stat *stbuf	)
 {
-	MSG_DEBUG( 	"=====> getattr operation called" );
+	MSG_OPSTAT_VERBOSE("GETATTR", path);
 
 	//char *full_path = updatePath( path );
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val = 0;
-	MSG_DEBUG_STR( "   full path", full_path );
+
 	//memset( stbuf, 0, sizeof(struct stat) );
 
 	if( lstat( full_path, stbuf ) != 0 )
@@ -534,10 +513,9 @@ int d2op_getattr(	const char 	*path,
 	stbuf->st_uid = buf_mnt_uid;
 	stbuf->st_gid = buf_mnt_gid;
 
-
 	//relesePath( full_path );
 
-	MSG_DEBUG( 	"-----> end of getattr" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
@@ -545,8 +523,7 @@ int d2op_fgetattr(	const char 			*path,
 							struct stat *stbuf,
 							struct fuse_file_info	*fi	)
 {
-	MSG_DEBUG( 	"=====> fgetattr operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE("FGETATTR", path);
 
 	int ret_val = 0;
 
@@ -563,14 +540,13 @@ int d2op_fgetattr(	const char 			*path,
 	stbuf->st_uid = buf_mnt_uid;
 	stbuf->st_gid = buf_mnt_gid;
 
-	MSG_DEBUG( 	"-----> end of fgetattr" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_chmod( const char *path, mode_t mode )
 {
-	MSG_DEBUG( 	"=====> chmod operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE("CHMOD", path);
 
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
@@ -582,14 +558,13 @@ int d2op_chmod( const char *path, mode_t mode )
 
 	//relesePath( full_path );
 
-	MSG_DEBUG( 	"-----> end of chmod" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_chown( const char *path, uid_t uid, gid_t gid)
 {
-	MSG_DEBUG( 	"=====> chown operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE("CHOWN", path);
 
 	int ret_val = 0;
 	// TODO: check if fs is read only
@@ -606,14 +581,14 @@ int d2op_chown( const char *path, uid_t uid, gid_t gid)
 	}
 
 	// lack of permisions to change owner
-	MSG_DEBUG_DEC( 	"-----> end of chown", ret_val );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_utimens( const char *path, const struct timespec tv_am[2] )
 {
-	MSG_DEBUG( 	"=====> utimens operation called" );
-	MSG_DEBUG_STR( 	"   path", path );
+	MSG_OPSTAT_VERBOSE("UTIMENS", path);
+
 	int ret_val;
 	struct timeval tv_am_str[2];
 
@@ -644,25 +619,25 @@ int d2op_utimens( const char *path, const struct timespec tv_am[2] )
 		tv_am_str
 	);
 
-	MSG_DEBUG( 	"-----> end of utimens" );
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_access(const char *path, int mask) {
-	MSG_OPSTAT_VERBOSE(op_stat, "ACCESS", path);
+	MSG_OPSTAT_VERBOSE("ACCESS", path);
 
 	int ret_val;
 
 	ret_val = access(strbuff_setFullPath( op_str_buff, path ), mask);
 
-	MSG_OPSTAT_SUMMARY(op_stat);
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 
 // link read/modify operations:
 int d2op_readlink(const char *path, char *linkbuf, size_t size) {
-	MSG_OPSTAT_VERBOSE( op_stat, "READLINK", path );
+	MSG_OPSTAT_VERBOSE("READLINK", path);
 
 	ssize_t linkbuf_len;
 
@@ -675,12 +650,12 @@ int d2op_readlink(const char *path, char *linkbuf, size_t size) {
 	linkbuf[linkbuf_len] = '\0';
 
 
-	MSG_OPSTAT_SUMMARY(op_stat);
+	MSG_OPSTAT_SUMMARY();
 	return 0;
 }
 
 int d2op_symlink(const char *from, const char *to) {
-	MSG_OPSTAT_VERBOSE( op_stat, "SYMLINK", from, to );
+	MSG_OPSTAT2_VERBOSE("SYMLINK", from, to);
 
 	char *full_path = strbuff_setFullPath( op_str_buff, to );
 	int ret_val;
@@ -691,14 +666,14 @@ int d2op_symlink(const char *from, const char *to) {
 
 	lchown( full_path, buf_str_uid, buf_str_gid );
 
-	MSG_OPSTAT_SUMMARY(op_stat);
+	MSG_OPSTAT_SUMMARY();
 	return ret_val;
 }
 
 int d2op_link(const char *from, const char *to) {
-	MSG_DEBUG( 	"=====> link operation called [not allowed]" );
+	MSG_OPSTAT2_VERBOSE("LINK", from, to);
 
-	MSG_DEBUG( 	"-----> end of link" );
+	MSG_OPSTAT_SUMMARY();
 	return EPERM;
 }
 

@@ -33,14 +33,17 @@ typedef struct stats {
 Stats *stat_init();
 void stat_destroy(Stats *s);
 
-void stat_op_start(const Stats *s, char *op_name, int argc, ...);
-void stat_op_end(const Stats *s);
+void stat_op_start(Stats *s, char *op_name, int argc, ...);
+void stat_op_end(Stats *s);
 
-#define MSG_OPSTAT_VERBOSE(s, op_name, ...) \
-	stat_op_start(s, op_name, ...);
+#define MSG_OPSTAT_VERBOSE(op_name, path) \
+	stat_op_start(op_stat, op_name, 1, path);
 
-# define MSG_OPSTAT_SUMMARY(s) \
-	stat_op_end(s);
+#define MSG_OPSTAT2_VERBOSE(op_name, path, path2) \
+	stat_op_start(op_stat, op_name, 2, path, path2);
+
+# define MSG_OPSTAT_SUMMARY() \
+	stat_op_end(op_stat);
 
 void stat_opendir();
 void stat_readdir();
