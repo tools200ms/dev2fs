@@ -80,7 +80,7 @@ void operations_destroy() {
 /* File system statistics,
 	function is forwarding fs call.
  */
-int d2op_statfs( const char *path, struct statvfs *buf )
+int d2op_statfs(const char *path, struct statvfs *buf)
 {
 	MSG_OPSTAT_VERBOSE("STATFS", path);
 
@@ -89,9 +89,7 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 	//updatePath( path );
 	int ret_val;
 
-	if( (ret_val = statvfs( full_path, buf )) == -1 )
-		perror( msg_getProgramName() );
-
+	ret_val = statvfs( full_path, buf );
 
 	//relesePath( full_path );
 
@@ -103,8 +101,8 @@ int d2op_statfs( const char *path, struct statvfs *buf )
 	function is forwarding fs call, fi->fh is set
 	for readdir and releasedir operations.
  */
-int d2op_opendir( const char *path,
-				struct fuse_file_info 	*fi )
+int d2op_opendir(const char *path,
+				struct fuse_file_info 	*fi)
 {
 	MSG_OPSTAT_VERBOSE("OPENDIR", path);
 
@@ -117,7 +115,6 @@ int d2op_opendir( const char *path,
 		memcpy( &(fi->fh), &d_handler, sizeof( struct dir_handler * ) );
 	}
 	else {
-		perror( msg_getProgramName() );
 		ret_val = -1;
 	}
 
@@ -200,9 +197,7 @@ int d2op_rmdir( const char *path )
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-	if( (ret_val = rmdir( full_path )) == -1 ) {
-			perror( msg_getProgramName() );
-	}
+	ret_val = rmdir( full_path );
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;
@@ -228,9 +223,7 @@ int d2op_open(	const char 	*path,
 	//fi->fh = (long)f_handler;
 	memcpy( &(fi->fh), &f_handler, sizeof( struct file_handler * ) );
 
-	if( (f_handler->fd = open( full_path, fi->flags )) == -1 )
-	{
-		perror( msg_getProgramName() );
+	if( (f_handler->fd = open( full_path, fi->flags )) == -1 ) {
 		ret_val = -1;
 	}
 
@@ -261,11 +254,12 @@ int d2op_read(	const char 					*path,
 
 	int fd = f_handler->fd;
 
-	if( (read_bytes = pread( fd, buf, size, offset )) == -1 )
-	{
-		perror( msg_getProgramName() );
-		//return 0;
-	}
+	read_bytes = pread( fd, buf, size, offset );
+
+	//if( () == -1 ) {
+	//	perror( msg_getProgramName() );
+	//	//return 0;
+	//}
 
 	MSG_DEBUG_( "      read_bytes", "%lu", read_bytes );
 
@@ -303,9 +297,7 @@ int d2op_create( 	const char 					*path,
 
 	struct file_handler *f_handler = malloc( sizeof (struct file_handler) );
 
-	if( (f_handler->fd = open( full_path, fi->flags, mode )) == -1 )
-	{
-		perror( msg_getProgramName() );
+	if( (f_handler->fd = open( full_path, fi->flags, mode )) == -1 ) {
 		free( f_handler );
 
 		return -1;
@@ -339,10 +331,9 @@ int d2op_write( 	const char 					*path,
 	MSG_DEBUG_( "      offset", "%lu", offset );
 	MSG_DEBUG_( "    FD", "%d", f_handler->fd );
 
-	if( (write_bytes = pwrite( f_handler->fd, buf, size, offset )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
+	write_bytes = pwrite( f_handler->fd, buf, size, offset );
+	//if( () == -1 ) {
+	//}
 
 	MSG_DEBUG_( 			"      write_bytes", "%lu", write_bytes );
 
@@ -359,10 +350,11 @@ int d2op_truncate( 	const char 				*path,
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
 
-	if( (ret_val = truncate( full_path, length )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
+	ret_val = truncate( full_path, length );
+
+	//if( () == -1 ) {
+	//	perror( msg_getProgramName() );
+	//}
 
 	//relesePath( full_path );
 
@@ -430,10 +422,10 @@ int d2op_unlink( const char *path )
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-	if( (ret_val = unlink( full_path )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
+	ret_val = unlink( full_path );
+	//if( () == -1 ) {
+	//	perror( msg_getProgramName() );
+	//}
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;
@@ -455,10 +447,10 @@ int d2op_rename( const char *src_path, const char *dest_path )
 
 	dest_full_path = strbuff_setFullPath( op_str_buff, dest_path );
 
-	if( (ret_val = rename( src_full_path, dest_full_path )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
+	ret_val = rename( src_full_path, dest_full_path );
+	//if( () == -1 ) {
+	//	perror( msg_getProgramName() );
+	//}
 
 	free(src_full_path);
 
@@ -503,9 +495,7 @@ int d2op_getattr(	const char 	*path,
 
 	//memset( stbuf, 0, sizeof(struct stat) );
 
-	if( lstat( full_path, stbuf ) != 0 )
-	{
-		perror( msg_getProgramName() );
+	if( lstat( full_path, stbuf ) != 0 ) {
 		ret_val = -ENOENT;
 	}
 
@@ -530,9 +520,7 @@ int d2op_fgetattr(	const char 			*path,
 	struct file_handler *f_handler;
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
 
-	if( fstat( f_handler->fd, stbuf ) != 0 )
-	{
-		perror( msg_getProgramName() );
+	if( fstat( f_handler->fd, stbuf ) != 0 ) {
 		ret_val = -ENOENT;
 	}
 
@@ -551,10 +539,11 @@ int d2op_chmod( const char *path, mode_t mode )
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 	int ret_val;
 
-	if( (ret_val = chmod( full_path, mode )) == -1 )
-	{
-		perror( msg_getProgramName() );
-	}
+	ret_val = chmod( full_path, mode );
+
+	//if( () == -1 ) {
+	//	perror( msg_getProgramName() );
+	//}
 
 	//relesePath( full_path );
 

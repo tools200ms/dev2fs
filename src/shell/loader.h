@@ -45,6 +45,6 @@ void load_release();// struct loader *load );
 /**
 	print information about current configuration
 */
-void loadedconf_print_summary( FILE *stream, struct config_data *conf_data, struct loader *load );
+void loadedconf_print_summary( FILE *stream, const char *exec_name, struct config_data *conf_data, struct loader *load );
 
 #endif // _DEV2FS_200MS_NET__SHELL_LOADER_H_

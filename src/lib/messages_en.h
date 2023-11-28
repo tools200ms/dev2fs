@@ -42,7 +42,7 @@
 										"    -h   --help            print help\n"\
 										"    -V   --version         print version\n"
 
-#define MSG_NOTTREE_OPTIONS	"teaFS options:\n"\
+#define MSG_DEV2FS_OPTIONS	"Dev2FS options:\n"\
 										"    -D NAME                equivalent to '-o notallowdir=NAME'\n"\
 										"    -F NAME                equivalent to '-o notallowfile=NAME'\n"\
 										"\n"\
@@ -59,7 +59,6 @@
 	mapper messages:
 */
 
-#define MSG_TAGS_INFO			"Following tags have been found:\n"
 
 #define MSG_RESMAP_INFO			"Following resources has been mapped:\n"
 

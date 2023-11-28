@@ -1,3 +1,3 @@
 
 // add debug messages and checks
-# define DEBUG 1
+// # define DEBUG 1

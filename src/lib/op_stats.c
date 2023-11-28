@@ -39,18 +39,21 @@ Stats *stat_init() {
 
 void stat_op_start(Stats* s, char* op_name, int argc, ...)
 {
+	va_list op_data;
 	char *path, *path2 = NULL;
 	char *format = "%s: %s";
 
 	if( s->run == RUN ) {
 		//Raise panic
-		//fprintf( stdout, "No-atomic call of: %s: %s", op_name, path);
+		va_start(op_data, argc);
+
+		path = va_arg(op_data, char *);
+		fprintf( stderr, "No-atomic call of: %s: %s\n", op_name, path);
 		exit(11);
 	}
 
 	s->run = RUN;
 
-	va_list op_data;
 	va_start(op_data, argc);
 
 	path = va_arg(op_data, char *);
@@ -71,7 +74,7 @@ void stat_op_end(Stats *s) {
 
 	if( s->run == NORUN ) {
 		//Raise panic
-		//fprintf( stdout, "No-atomic call of: %s: %s", op_name, path);
+
 		exit(12);
 	}
 
@@ -85,7 +88,7 @@ void stat_op_end(Stats *s) {
 		nsec_el += 1000000000;
 	}
 
-	fprintf(stdout, "(sec nsec)\n");//, sec_el, nsec_el);
+	fprintf(stdout, "   (%ld,%09ld sec)\n", sec_el, nsec_el);
 
 	s->run = NORUN;
 }

@@ -43,7 +43,7 @@ static int dev2fs_options_proc( 		void *data,
 enum	{ KEY_VERBOSE, KEY_VERSION, KEY_HELP };
 
 
-static struct fuse_opt nottree_commandline_opts[] = 
+static struct fuse_opt commandline_opts[] =
 {
 	DEV2FS_OPT_KEY( 	CONF_OPT_NOTALLOWED_DIR_NAME,
 											notallowed_dir_name, 
@@ -72,8 +72,8 @@ static struct fuse_opt nottree_commandline_opts[] =
 
 
 enum {	CONF_PARSER_WRONG_ARG, 
-			CONF_PARSER_VERSION_PRINT, 
-			CONF_PARSER_HELP_PRINT		};
+		CONF_PARSER_VERSION_PRINT,
+		CONF_PARSER_HELP_PRINT		};
 static int conf_parser_program_abort_cause;
 
 /*
@@ -88,8 +88,6 @@ static int confPostValidationErrors( struct config_data *conf_data )
 
 Config *conf_init( int argc, char *argv[] )
 {
-	msg_setProgramName( argv[0] );
-
 	Config *conf;
 
 	if( (conf = malloc( sizeof (Config) )) == NULL )
@@ -105,6 +103,7 @@ Config *conf_init( int argc, char *argv[] )
 
 	/* initiates struct fuse_args
 	 * does the same as FUSE_ARGS_INIT( argc, argv );*/
+
 	conf->fuse_arguments->argc = argc;
 	conf->fuse_arguments->argv = argv;
 	conf->fuse_arguments->allocated = 0; 
@@ -115,12 +114,10 @@ Config *conf_init( int argc, char *argv[] )
 	conf_parser_program_abort_cause = CONF_PARSER_WRONG_ARG;
 
 	if( (fuse_opt_parse( 	conf->fuse_arguments, 
-									&(conf->data), 
-									nottree_commandline_opts, 
-									dev2fs_options_proc ) 		== -1)
-								 || 
-									confPostValidationErrors( &(conf->data) ) )
-	{
+							&(conf->data),
+							commandline_opts,
+							dev2fs_options_proc ) 		== -1)
+				|| confPostValidationErrors( &(conf->data) ) ) {
 		FILE *stream = stderr;
 		/* arguments for help/version print fuse_main() call */
 		char *targv[2] = {NULL, NULL};
@@ -130,17 +127,17 @@ Config *conf_init( int argc, char *argv[] )
 			/* display help message as it was requested (-h or --help was given as an argument) */
 			case CONF_PARSER_HELP_PRINT:
 				/* print's help message to stdout */
-				msg_notTreeHelp( stream = stdout );
+				PRINT_DEV2FS_HELP( stream = stdout, argv[0] );
 				targv[0] = argv[0]; targv[1] = "-ho";
 			break;
 			/* prints help message in response to wrong/missing arguments */
 			case CONF_PARSER_WRONG_ARG:
-				msg_notTreeWrongSyntax( stream );
+				PRINT_WRONG_SYNTAX_ERROR( stream, argv[0] );
 			break;
 
 			/* prints version as it was requested (by -V argument) */
 			case CONF_PARSER_VERSION_PRINT:
-				msg_notTreeVersion( stream = stdout );
+				PRINT_DEV2FS_VERSION_INFO( stream = stdout );
 				targv[0] = argv[0]; targv[1] = CONF_ARG_SHORT_VERSION;
 
 			default:
@@ -164,8 +161,8 @@ Config *conf_init( int argc, char *argv[] )
 			fuse_main( 2, targv, NULL, NULL );
 		}
 		
-		conf_destroy( conf );
-		exit( stream != stdout );
+		conf_destroy(conf);
+		exit(stream != stdout);
 	}
 
 	return conf;
@@ -182,12 +179,12 @@ void conf_destroy( struct config *conf )
 	if( conf->fuse_arguments != NULL )
 		fuse_opt_free_args( conf->fuse_arguments );
 	
-	free( conf );
+	free(conf);
 }
 
-#define CONF_PARSE_KEEP_FLAG 	return  1
-#define CONF_PARSE_DISCARD_FLAG	return  0
-#define CONF_PARSE_EXIT_PROGRAM	return -1
+#define CONF_PARSE_KEEP_FLAG 	 return  1
+#define CONF_PARSE_DISCARD_FLAG	 return  0
+#define CONF_PARSE_SKIP_REMFLAGS return -1
 
 static int dev2fs_options_proc( 	void *data,
 									const char *arg,
@@ -219,7 +216,7 @@ static int dev2fs_options_proc( 	void *data,
 				CONF_PARSE_KEEP_FLAG;
 		
 				case 3: // source_dir_path & mount_point_path are set
-				CONF_PARSE_EXIT_PROGRAM;
+				CONF_PARSE_SKIP_REMFLAGS;
 			}
 
 			//shouldn't happen
@@ -233,6 +230,8 @@ static int dev2fs_options_proc( 	void *data,
 			msgSetVerboseMode();
 			MSG_DEBUG( "FUSE_VERBOSE" );
 			MSG_DEBUG_BR;
+
+		//CONF_PARSE_DISCARD_FLAG;
 		CONF_PARSE_KEEP_FLAG;
 		
 		case KEY_VERSION:
@@ -240,20 +239,19 @@ static int dev2fs_options_proc( 	void *data,
 			MSG_DEBUG( "FUSE_VERSION" );
 			MSG_DEBUG_BR;
 
-		conf_parser_program_abort_cause = CONF_PARSER_VERSION_PRINT;
-		CONF_PARSE_EXIT_PROGRAM;
-		//exit( 0 );
+			conf_parser_program_abort_cause = CONF_PARSER_VERSION_PRINT;
+		CONF_PARSE_SKIP_REMFLAGS;
 
 		case KEY_HELP:
 
 			MSG_DEBUG( "FUSE_HELP" );
 			MSG_DEBUG_BR;
 		
-		conf_parser_program_abort_cause = CONF_PARSER_HELP_PRINT;
-		CONF_PARSE_EXIT_PROGRAM;
+			conf_parser_program_abort_cause = CONF_PARSER_HELP_PRINT;
+		CONF_PARSE_SKIP_REMFLAGS;
 		
 		default:
-			//check if fuse options are meched
+			//check if fuse options are mached
 		break;
 	}
 

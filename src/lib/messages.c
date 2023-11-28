@@ -23,39 +23,6 @@
 #include "../dev2fs.h"
 #include "messages.h"
 
-static char *msg_program_name = NULL;
-
-void msg_setProgramName( char *program_name )
-{
-	msg_program_name = program_name;
-}
-
-char *msg_getProgramName()
-{
-	return msg_program_name;
-}
-
-/**
-	formatting functions
-*/
-
-void msg_notTreeVersion( FILE *stream )
-{
-	fprintf( stream, "%s: %s\n", MSG_VERSION_INFO, DEV2FS_VERSION );
-}
-
-void msg_notTreeHelp( FILE *stream )
-{
-	fprintf( stream, 	MSG_OPTIONS_HEADER, 
-							msg_program_name, MSG_PROGRAM_USAGE, 
-							MSG_GENERAL_OPTIONS, 
-							MSG_NOTTREE_OPTIONS 	);
-}
-
-void msg_notTreeWrongSyntax( FILE *stream )
-{
-	fprintf( stream, MSG_WRONG_SYNTAX, msg_program_name );
-}
 
 /**
 	

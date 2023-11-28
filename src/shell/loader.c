@@ -58,7 +58,6 @@ void load_init( struct config *conf, struct loader *load )
 	{
 		MSG_DEBUG_( "errno source", "%d", errno );
 
-		perror( msg_getProgramName() );
 		MSG_ERROR_AND_EXIT( "Failed to open mount point, resource might be mounted already" );
 	}
 
@@ -72,7 +71,7 @@ void load_init( struct config *conf, struct loader *load )
 	{
 		MSG_DEBUG_( "errno storage", "%d", errno );
 
-		perror( msg_getProgramName() );
+		perror( "" );
 		MSG_ERROR_AND_EXIT( "Failed to open " );
 	}
 
@@ -158,14 +157,14 @@ void load_release( struct loader *load )
 }
 
 
-void loadedconf_print_summary(FILE* stream, struct config_data* conf_data, struct loader* load)
+void loadedconf_print_summary(FILE* stream, const char *exec_name, struct config_data* conf_data, struct loader* load)
 {
 	fprintf	( stream, 	"%s started with the following parameters:\n"\
 								"     storage dir (fixed uid/gid: %d/%d): %s/\n"\
 								"       mount dir (fixed uid/gid: %d/%d): %s/\n"\
 								" not allowed dir: %s\n"\
 								"not allowed file: %s\n",
-							msg_getProgramName(),
+							exec_name,
 				load->str_uid, load->str_gid,
 							( 	load->str_path != NULL ) ?
 								load->str_path : MSG_NOTDEFINED,

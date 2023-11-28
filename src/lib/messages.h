@@ -96,16 +96,18 @@
 
 #endif //DEBUG
 
-/**
-	message display functions
-*/
-void  msg_setProgramName( char *program_name );
-char *msg_getProgramName();
+#define PRINT_DEV2FS_VERSION_INFO( stream ) \
+	fprintf(stream, "%s: %s\n", MSG_VERSION_INFO, DEV2FS_VERSION);
 
-void msg_notTreeVersion		( FILE *stream );
-void msg_notTreeHelp			( FILE *stream );
+#define PRINT_DEV2FS_HELP( stream, exec_name ) \
+	fprintf( stream, 	MSG_OPTIONS_HEADER, \
+							exec_name, MSG_PROGRAM_USAGE, \
+							MSG_GENERAL_OPTIONS, \
+							MSG_DEV2FS_OPTIONS 	);
 
-void msg_notTreeWrongSyntax( FILE *stream );
+#define PRINT_WRONG_SYNTAX_ERROR( stream, exec_name ) \
+	fprintf( stream, MSG_WRONG_SYNTAX, exec_name );
+
 
 /**
 	deffinitions of verbose mode functions and macros

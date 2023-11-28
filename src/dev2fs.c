@@ -108,7 +108,7 @@ int main( int argc, char *argv[] )
 	load_init( d2_ref.conf, d2_ref.load );
 	MSG_VERBOSE( "CONFIG: OK, configuration successfully loaded" );
 
-	MSG_VERBOSE_FUN_ARGS( loadedconf_print_summary, &((*(d2_ref.conf)).data), d2_ref.load );
+	MSG_VERBOSE_FUN_ARGS( loadedconf_print_summary, argv[0], &((*(d2_ref.conf)).data), d2_ref.load );
 
 	if( (d2_ref.map = malloc( sizeof (struct mapper) )) == NULL )
 		return 1;
@@ -130,10 +130,10 @@ int main( int argc, char *argv[] )
 
 
 	MSG_VERBOSE( "DEV2FS: Starting FUSE" );
-	ret_val = fuse_main( 	(*((*(d2_ref.conf)).fuse_arguments)).argc,
-									(*((*(d2_ref.conf)).fuse_arguments)).argv,
-									(d2_ref.sys)->operations,
-									NULL );
+	ret_val = fuse_main( 	d2_ref.conf->fuse_arguments->argc,
+							d2_ref.conf->fuse_arguments->argv,
+							d2_ref.sys->operations,
+							NULL );
 
 	// TODO add signals handler and call it when exit signal comes !!!
 
