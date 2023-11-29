@@ -20,9 +20,9 @@
 #ifndef _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_
 #define _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_
 
-#define REL_PATH_MAX_BUFFSIZE 4000
-#define REL_PATH_DEFAULT_BUFFSIZE 0
-#define REL_PATH_BUFF_MARGIN 0
+// #define REL_PATH_MAX_BUFFSIZE 4096
+#define REL_PATH_DEFAULT_BUFFSIZE 128
+#define REL_PATH_BUFF_MARGIN 64
 
 typedef struct path_buffer
 {
@@ -40,14 +40,9 @@ void 		strbuff_destroy( StringBuffer *buf );
 //char *			getFullPath( StringBuffer *buf, char *relative_path );
 
 // add (...) multi arguments
-char *strbuff_setFullPath( StringBuffer *buf, const char *relative_path );
+char *strbuff_setFullPath(StringBuffer *buf, const char *relative_path);
 
-char *			strbuff_addPostfix( StringBuffer *buf, const char *postfix );
-
-
-StrBuff_base_idx strbuff_getBaseIdx( StringBuffer *buf );
-StrBuff_base_idx strbuff_resetRelativePath( StringBuffer *buf );
-void 			 strbuff_setRelativePath( StringBuffer *buf, StrBuff_base_idx relative_idx );
+void strbuff_release(char *path);
 
 
 #endif // _DEV2FS_200MS_NET__LIB_STRING_BUFFER_H_

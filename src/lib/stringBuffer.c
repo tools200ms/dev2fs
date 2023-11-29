@@ -60,7 +60,7 @@ void strbuff_destroy( StringBuffer *buf )
 }
 
 
-char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
+char *strbuff_setFullPath(StringBuffer *buf, const char *rel_path)
 {
 	size_t rp_len = strlen( rel_path );
 	MSG_DEBUG_STR( "     (old) base path", buf->p_buf );
@@ -90,5 +90,10 @@ char *strbuff_setFullPath( StringBuffer *buf, const char *rel_path )
 	MSG_DEBUG_STR( "     (new) base path", buf->p_buf );
 
 	return buf->p_buf;
+}
+
+void strbuff_release(char *path) {
+
+	free(path);
 }
 

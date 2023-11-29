@@ -91,7 +91,7 @@ int d2op_statfs(const char *path, struct statvfs *buf)
 
 	ret_val = statvfs( full_path, buf );
 
-	//relesePath( full_path );
+	strbuff_release( full_path );
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;
