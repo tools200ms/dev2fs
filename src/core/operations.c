@@ -559,15 +559,15 @@ int d2op_chown( const char *path, uid_t uid, gid_t gid)
 	// TODO: check if fs is read only
 	// if so: return EROFS;
 
-	if( uid == buf_mnt_uid && gid == buf_mnt_gid )
+	// if( uid == buf_mnt_uid && gid == buf_mnt_gid )
 	{
 		// remap permissions:
 		ret_val = chown(
 			strbuff_setFullPath( op_str_buff, path ),
 			buf_str_uid, buf_str_gid);
-	} else {
-		ret_val = EPERM;
-	}
+	} //else {
+	//	ret_val = EPERM;
+	//}
 
 	// lack of permisions to change owner
 	MSG_OPSTAT_SUMMARY();
