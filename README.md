@@ -9,7 +9,9 @@ Hence, neat solution is to have to share following two directories with host:
 - '<project dir>/app' - application, not to be committed to a code repository (as it's not a code you work on)
 - '<project dir>/src' - sources of your plugin/theme/module, to be committed and traced in the repository
 Docker would be deployed with a following parameters:
-`docker ... -v $(pwd)/app:/code/app -v $(pwd)/src:/code/my -e DEV2MAP='/code/app->/var/www/html, /code/my->wp-content/plugins' ...`
+```bash
+docker ... -v $(pwd)/app:/code/app -v $(pwd)/src:/code/my -e DEV2MAP='/code/app->/var/www/html, /code/my->wp-content/plugins' ...
+```
 
 First code is shared in a fixed manner using Docker, second Def2FS is instructed to dynamically handle directory re-mappings and uid/gid re-mappings.
 It is an intermediary FS layer between container mounts and application.
@@ -19,18 +21,25 @@ Without Dev2FS there is the need to play with 'docker create/stop/start/save', '
 At this point it's a work in progress, the code is based on [TeaFS filesystem](https://sourceforge.net/projects/teafs-legacy/) that I developed a long years ago. Purpose was to experiment with treating directory names as 'tags'. The assumption was that it would help in data organization.
 
 
-# Requirments, compilation and installation
+# Requirements, compilation and installation
 
-Dev2FS is a C program that requires Libc and Fuse liblaries to function, ensure you have following tools:
-make gcc libc-dev fuse-dev
+Dev2FS is a C program that requires Libc and Fuse libraries, ensure you have following tools:
 
-When requirments are meet go to Dev2FS root directory (directory where this README.md file resides) and issue:
+> make gcc libc-dev fuse-dev
 
->  make
+When requirements are meet go to Dev2FS root directory (directory where this README.md is) and issue:
+
+```bash
+make
+```
+
 This will compile file ./src/dev2fs
 
-To install (e.g. copy to /usr/bin) issue as root:
->  make install (as root)
+To install issue as root:
+
+```
+make install
+```
 
 # Launch
 
