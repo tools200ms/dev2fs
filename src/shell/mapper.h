@@ -35,6 +35,7 @@ struct mapper
 
 void mapp_init( const struct loader *load, struct mapper *map );
 
+void mapp_check( struct mapper *map );
 void map_release( struct mapper *map );
 
 #endif // _DEV2FS_200MS_NET__SHELL_MAPPER_H_

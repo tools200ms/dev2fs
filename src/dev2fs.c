@@ -59,7 +59,7 @@ void *dev2fs_init( struct fuse_conn_info *conn )
 	return NULL;
 }
 
-void teafs_terminate()
+void d2_terminate()
 {
 	if( d2_ref.sys != NULL )
 	{
@@ -92,17 +92,15 @@ int main( int argc, char *argv[] )
 
 	memset( &d2_ref, 0, sizeof( struct dev2fs_references ) );
 
-	/**
-	 *	teaFS configuration
-	*/
-
+	// Load configuration:
 	if( (d2_ref.conf = conf_init( argc, argv )) == NULL )
 		return -1;
 
-	//add handler to call at exit
+	// TODO: add termination signal handlers
 
 	if( (d2_ref.load = malloc( sizeof (struct loader) )) == NULL )
 		return 1;
+
 	memset( d2_ref.load, 0, sizeof (struct loader) );
 
 	load_init( d2_ref.conf, d2_ref.load );
@@ -115,12 +113,10 @@ int main( int argc, char *argv[] )
 
 	memset( d2_ref.map, 0, sizeof (struct mapper) );
 
-	//MSG_VERBOSE( "Checking source directory" );
 	mapp_init( d2_ref.load, d2_ref.map );
+	mapp_check( d2_ref.map );
 
-	MSG_VERBOSE( "DATA SOURCE: OK, source directory tagged and mapped" );
-
-	//"no integity check parformed, it's advised to run with -C"
+	MSG_VERBOSE( "DATA: OK, source and destination looks good" );
 
 	if( (d2_ref.sys = malloc( sizeof (struct system) )) == NULL )
 		return 1;
