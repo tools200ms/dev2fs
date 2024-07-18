@@ -7,7 +7,7 @@ docker exec -it 453b59665976 bash -c \
 ### launch conteneraised devfs as root attached to mount point (owned by 'test') and storage (owned by 'proj')
 '''
 docker exec -it -u root 453b59665976 bash -c \
-    "./src/dev2fs -d /d2str /home/test/mnt/ -o allow_other"
+    "./build/dev2fs -d /d2str /home/test/mnt/ -o allow_other"
 '''
 
 ### Test as 'test' user:
