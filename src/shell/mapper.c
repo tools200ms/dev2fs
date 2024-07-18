@@ -35,8 +35,7 @@
 void scan_source_directory( char *source_dir_path, struct mapper *map );
 
 
-void mapp_init( const struct loader *load, struct mapper *map )
-{
+void mapp_init( const struct loader *load, struct mapper *map ) {
 	map->str_buff = strbuff_init( load->str_path );
 
 }

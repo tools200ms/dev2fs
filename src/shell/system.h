@@ -22,8 +22,7 @@
 #define _DEV2FS_200MS_NET__SHELL_SYSTEM_H_
 
 
-struct system
-{
+struct system {
 	struct fuse_operations *operations;
 };
 

@@ -27,6 +27,5 @@
 /**
 	
 */
-int verbose_messages = 0;
 void msgSetVerboseMode()	{ verbose_messages = 1; }
 

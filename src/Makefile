@@ -33,6 +33,7 @@ endif
 #all: ${OUTPUT}
 
 ${OUTPUT}: ${BIN_OBJS}
+	mkdir -p ${DIR_BIN}
 	${CC} ${BIN_OBJS} ${LIBS} -o ${DIR_BIN}/${OUTPUT}
 
 compile: ${OUTPUT}

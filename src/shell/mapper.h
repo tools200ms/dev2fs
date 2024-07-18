@@ -27,8 +27,7 @@
 #include "../lib/stringBuffer.h"
 
 
-struct mapper
-{
+struct mapper {
 
 	StringBuffer *str_buff;
 };

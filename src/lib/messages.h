@@ -112,7 +112,7 @@
 /**
 	deffinitions of verbose mode functions and macros
 */
-extern int verbose_messages;
+static int verbose_messages;
 void msgSetVerboseMode();
 
 #define MSG_VERBOSE( msg ) \
@@ -128,6 +128,6 @@ void msgSetVerboseMode();
 			if( verbose_messages ) print_fun( stderr, args );
 
 #define MSG_ERROR_AND_EXIT( msg ) \
-			{fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); exit(1);}
+			{ fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); exit(1); }
 
 #endif // _DEV2FS_200MS_NET__LIB_MESSAGES_H_
