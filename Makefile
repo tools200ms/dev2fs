@@ -1,6 +1,7 @@
 
 SRC_DIR := ./src/
 
+PROJ_NAME := DevFS
 EXEC_NAME := dev2fs
 PREFIX := /usr/local/bin
 
@@ -45,14 +46,12 @@ endif
 
 ifneq ($(shell [ -f ./release/${RELEASE_NAME}.tar.xz ] && echo 1),1)
 	tar -cvJf ./release/${RELEASE_NAME}.tar.xz --exclude-vcs-ignores --exclude-vcs . --transform s/^\./${RELEASE_NAME}/
-	@echo "New DevFS's release file created: ../${RELEASE_NAME}.tar.xz"
+	@echo "New ${PROJ_NAME} release created: ../${RELEASE_NAME}.tar.xz"
 endif
 	@echo -n "MD5 sum is: "
 	@md5sum ./release/${RELEASE_NAME}.tar.xz
-	#| separate -N 0
 
 	@echo -n "Archive's size is: "
 	@ls -lh ./release/${RELEASE_NAME}.tar.xz
-	#| separate -N 4
 
 	@echo "----- Done. --------------------------------"
