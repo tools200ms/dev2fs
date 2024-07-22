@@ -61,7 +61,7 @@
 	  NOTE 2: The fianal releas ends with '4', e.g. 2.0.4, 2.1.4 is a
 	  code after 'minor' updates.
 */
-#define DEV2FS_VERSION "1.2beta.5"
+#define DEV2FS_VERSION "1.2beta.6"
 
 /* Detect if 'musl libc' is used, from:
  * https://stackoverflow.com/questions/58177815/how-to-actually-detect-musl-libc

@@ -30,13 +30,13 @@ endif
 .PHONY : one-command-compile \
          clean deepclean
 
-#all: ${OUTPUT}
+all: ${OUTPUT}
+compile: ${OUTPUT}
 
 ${OUTPUT}: ${BIN_OBJS}
 	mkdir -p ${DIR_BIN}
 	${CC} ${BIN_OBJS} ${LIBS} -o ${DIR_BIN}/${OUTPUT}
 
-compile: ${OUTPUT}
 
 testrun: compile
 	cd ../test && ./test.sh prepare
