@@ -59,6 +59,7 @@ static struct fuse_opt commandline_opts[] =
 											notallowed_file_name, 
 											0 ), 
 
+    // TODO: add verbose flag
 	FUSE_OPT_KEY( CONF_ARG_DEBUG,				KEY_VERBOSE ),
 	FUSE_OPT_KEY( CONF_OPT_DEBUG,				KEY_VERBOSE ),
 	FUSE_OPT_KEY( CONF_ARG_FOREGROUND,		KEY_VERBOSE ), 

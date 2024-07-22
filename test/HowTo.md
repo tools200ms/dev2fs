@@ -5,13 +5,14 @@ docker exec -it 453b59665976 bash -c \
 '''
 
 ### launch conteneraised devfs as root attached to mount point (owned by 'test') and storage (owned by 'proj')
-'''
-docker exec -it -u root 453b59665976 bash -c \
+
+```
+docker exec -it -u root test-dev2fs_with_musl-1 bash -c \
     "./build/dev2fs -d /d2str /home/test/mnt/ -o allow_other"
-'''
+```
 
 ### Test as 'test' user:
 ```
-docker exec -it -u test 453b59665976 bash
+docker exec -it -u test test-dev2fs_with_musl-1 bash
 cd
 ```

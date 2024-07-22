@@ -22,6 +22,7 @@
 #define _DEV2FS_200MS_NET__LIB_MESSAGES_H_
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "messages_en.h"
 
@@ -112,20 +113,21 @@
 /**
 	deffinitions of verbose mode functions and macros
 */
-static int verbose_messages;
+//extern int verbose_messages;
 void msgSetVerboseMode();
+bool msgIsVerboseModeSet();
 
 #define MSG_VERBOSE( msg ) \
-			if( verbose_messages ) fprintf( stderr, msg "\n" );
+			if( msgIsVerboseModeSet() ) fprintf( stderr, msg "\n" );
 
 #define MSG_VERBOSE_ARGS( format, msgs... ) \
-			if( verbose_messages ) fprintf( stderr, format "\n", msgs );
+			if( msgIsVerboseModeSet() ) fprintf( stderr, format "\n", msgs );
 
 #define MSG_VERBOSE_FUN( print_fun ) \
-			if( verbose_messages ) print_fun( stderr );
+			if( msgIsVerboseModeSet() ) print_fun( stderr );
 
 #define MSG_VERBOSE_FUN_ARGS( print_fun, args... ) \
-			if( verbose_messages ) print_fun( stderr, args );
+			if( msgIsVerboseModeSet() ) print_fun( stderr, args );
 
 #define MSG_ERROR_AND_EXIT( msg ) \
 			{ fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); exit(1); }

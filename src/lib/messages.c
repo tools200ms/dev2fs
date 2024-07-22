@@ -27,5 +27,8 @@
 /**
 	
 */
-void msgSetVerboseMode()	{ verbose_messages = 1; }
+static bool verbose_messages = false;
 
+void msgSetVerboseMode()           { verbose_messages = true; }
+
+inline bool msgIsVerboseModeSet()   { return verbose_messages; }

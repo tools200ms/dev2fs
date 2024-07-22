@@ -1,7 +1,8 @@
 version: '3.9'
 
 services:
-  os_alp: 
+  # musl libc
+  dev2fs_with_musl:
     build:
       context: .
       dockerfile: Dockerfile-alp
