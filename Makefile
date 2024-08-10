@@ -1,8 +1,10 @@
 
-SRC_DIR := ./src/
-
 PROJ_NAME := DevFS
+
+SRC_DIR := ./src
+BUILD_DIR := ./build
 EXEC_NAME := dev2fs
+
 PREFIX := /usr/local/bin
 
 RELEASE_NAME := ${EXEC_NAME}-${shell grep "#define[[:space:]][[:space:]]*DEV2FS_VERSION" src/${EXEC_NAME}.h | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
@@ -20,7 +22,7 @@ compile:
 install:
 	@echo "----- Installing ---------------------------"
 	
-	cp "${SRC_DIR}${EXEC_NAME}" "${PREFIX}"
+	cp "${BUILD_DIR}/${EXEC_NAME}" "${PREFIX}"
 	@echo "----- Done. --------------------------------"
 
 clean_current_dir:
