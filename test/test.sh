@@ -43,6 +43,11 @@ do_test() {
     cd -
 }
 
+do_test_find() {
+  	LATES_DUMP=$(find "${APPDUMP_DIR}" -name *.xml -type f | sort | tail -n 1)
+
+}
+
 # script launched from current directory
 if [ $(dirname $0) != '.' ] ; then
     echo "Please launch this script directly from the directory where it is located"
