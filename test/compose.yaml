@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   # musl libc
-  dev2fs_with_musl:
+  musl:
     build:
       context: .
       dockerfile: Dockerfile-alp
@@ -16,3 +16,19 @@ services:
       - ./data/submnt1:/d2strsubmnt1
       - ./data/submnt2:/d2strsubmnt2
     entrypoint: ["/usr/bin/tail", "-f", "/dev/stderr"]
+
+  # GNU libc
+  gnu:
+    build:
+      context: .
+      dockerfile: Dockerfile-deb
+    cap_add: ['SYS_ADMIN']
+    devices:
+      - /dev/fuse
+    volumes:
+      - ../src:/home/proj/src
+      - ../Makefile:/home/proj/Makefile
+      - ./data/str:/d2str
+      - ./data/submnt1:/d2strsubmnt1
+      - ./data/submnt2:/d2strsubmnt2
+    entrypoint: [ "/usr/bin/tail", "-f", "/dev/stderr" ]

@@ -13,13 +13,17 @@ ENV PCKGS_DEV='make gcc libc-dev libfuse-dev'
 
 RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV
 
-#RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
-#    printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $DUNAME -uid $DEVUID -gid $DEVGID
-#RUN RUNHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
-#    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -uid $RUNUID -gid $RUNGID
 
-#USER $DUNAME
-#WORKDIR /home/$DUNAME
+RUN addgroup --gid $DEVGID $DUNAME && \
+    USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
+    printf "$USERHIDPASS\n$USERHIDPASS\n$DUNAME\n\n\n\n\nY" | adduser --uid $DEVUID --gid $DEVGID $DUNAME
+
+RUN addgroup --gid $RUNGID $RUNAME && \
+    USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
+    printf "$USERHIDPASS\n$USERHIDPASS\n$RUNAME\n\n\n\n\nY" | adduser --uid $RUNUID --gid $RUNGID $RUNAME
+
+USER $DUNAME
+WORKDIR /home/$DUNAME
 
 
 ENTRYPOINT ["bash"]
