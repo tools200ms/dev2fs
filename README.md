@@ -1,4 +1,4 @@
-# dev2fs (Work in progress)
+# dev2fs
 
 This is a [FUSE](http://fuse.sourceforge.net) based filesystem, it has been developed to smooth development process of LAMP applications with Docker. [Docker](https://en.wikipedia.org/wiki/Docker_(software)) is a tool that greatly supports development process. Instead of manually setting up a various configurations on development box, I can just launch desired per-configured server with one command. When working on various projects it's very valuable automation tool.
 However, I found a few small issues that I want to address with Dev2FS:

@@ -23,6 +23,7 @@ install:
 	@echo "----- Installing ---------------------------"
 	
 	cp "${BUILD_DIR}/${EXEC_NAME}" "${PREFIX}"
+	ln -s "${PREFIX}/${EXEC_NAME}" "/sbin/mount.${EXEC_NAME}"
 	@echo "----- Done. --------------------------------"
 
 clean_current_dir:
