@@ -10,8 +10,9 @@ ENV RUNGID=3300
 
 ENV PCKGS_BASE=''
 ENV PCKGS_DEV='make gcc libc-dev libfuse-dev'
+ENV PCKGS_TEST='gdb valgrind'
 
-RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV
+RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV $PCKGS_TEST
 
 
 RUN addgroup --gid $DEVGID $DUNAME && \
