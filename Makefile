@@ -33,7 +33,7 @@ clean_current_dir:
 
 clean: clean_current_dir
 	@echo "----- Cleaning -----------------------------"
-	
+
 	$(MAKE) -C ${SRC_DIR} clean
 	@echo "----- Done. --------------------------------"
 

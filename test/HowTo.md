@@ -8,7 +8,7 @@
 docker compose up
 
 # Compile Dev2FS inside continer: 
-docker exec -it test-dev2fs_with_musl-1 sh -c \
+docker exec -it test-musl-1 sh -c \
     "make clean && make"
 ```
 
