@@ -17,9 +17,8 @@ RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV $PCKGS_TEST
 RUN USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
     printf "$USERHIDPASS\n$USERHIDPASS\n" | adduser $DUNAME -u $DEVUID -g $DEVGID
 RUN RUNHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
-    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -u $RUNUID -g $RUNGID && \
-    su $RUNAME -c "mkdir ~/mnt"
-
+    printf "$RUNHIDPASS\n$RUNHIDPASS\n" | adduser $RUNAME -u $RUNUID -g $RUNGID
+RUN su $RUNAME -c "mkdir ~/mnt"
 
 USER $DUNAME
 WORKDIR /home/$DUNAME

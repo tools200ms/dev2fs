@@ -9,6 +9,8 @@ services:
     cap_add: ['SYS_ADMIN']
     devices:
       - /dev/fuse
+    hostname: MUSL
+    container_name: musl
     volumes: 
       - ../src:/home/proj/src
       - ../Makefile:/home/proj/Makefile
@@ -25,6 +27,8 @@ services:
     cap_add: ['SYS_ADMIN']
     devices:
       - /dev/fuse
+    hostname: GNU
+    container_name: gnu
     volumes:
       - ../src:/home/proj/src
       - ../Makefile:/home/proj/Makefile

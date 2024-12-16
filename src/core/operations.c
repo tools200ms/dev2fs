@@ -422,10 +422,10 @@ int d2op_unlink( const char *path )
 	int ret_val;
 	char *full_path = strbuff_setFullPath( op_str_buff, path );
 
-	ret_val = unlink( full_path );
-	//if( () == -1 ) {
-	//	perror( msg_getProgramName() );
-	//}
+	if( (ret_val = unlink( full_path )) == -1 ) {
+		MSG_ERROR_ARGS( "'unlink' failed: %s, ret. val.: %d", path, ret_val );
+		return ret_val;
+	}
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;
@@ -447,12 +447,12 @@ int d2op_rename( const char *src_path, const char *dest_path )
 
 	dest_full_path = strbuff_setFullPath( op_str_buff, dest_path );
 
-	ret_val = rename( src_full_path, dest_full_path );
-	//if( () == -1 ) {
-	//	perror( msg_getProgramName() );
-	//}
+	if( (ret_val = rename( src_full_path, dest_full_path )) != 0 ) {
+		MSG_ERROR_ARGS( "'rename' failed: %s => %s, ret. val.: %d", src_path, dest_path, ret_val );
+		return ret_val;
+	}
 
-	free(src_full_path);
+	free( src_full_path );
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;
@@ -476,7 +476,14 @@ int d2op_mknod(const char *path, mode_t mode, dev_t rdev) {
 		MSG_DEBUG( 	"      Socket" );
 	}
 
-	ret_val = mknod(full_path, mode, rdev);
+	if( (ret_val = mknod( full_path, mode, rdev )) != 0 ) {
+		MSG_ERROR_ARGS( "'mknod' failed: %s, ret. val.: %d", path, ret_val );
+		return ret_val;
+	}
+
+	if( (ret_val = chown( full_path, buf_str_uid, buf_str_gid )) != 0 ) {
+		MSG_ERROR_ARGS( "'chown' failed: %s, ret. val.: %d", path, ret_val );
+	}
 
 	MSG_OPSTAT_SUMMARY();
 	return ret_val;

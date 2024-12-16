@@ -129,6 +129,12 @@ bool msgIsVerboseModeSet();
 #define MSG_VERBOSE_FUN_ARGS( print_fun, args... ) \
 			if( msgIsVerboseModeSet() ) print_fun( stderr, args );
 
+#define MSG_ERROR( msg ) \
+	{ fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); }
+
+#define MSG_ERROR_ARGS( format, msgs... ) \
+	{ fprintf( stderr, "%s: " format "\n", "dev2fs error", msgs ); }
+
 #define MSG_ERROR_AND_EXIT( msg ) \
 			{ fprintf( stderr, "%s: %s\n", "dev2fs error", msg ); exit(1); }
 
