@@ -13,10 +13,9 @@ services:
     container_name: musl
     volumes: 
       - ../src:/home/proj/src
+      - ../tests:/home/proj/tests
       - ../Makefile:/home/proj/Makefile
-      - ./data/str:/d2str
-      - ./data/submnt1:/d2strsubmnt1
-      - ./data/submnt2:/d2strsubmnt2
+      - ./data:/d2str
     entrypoint: ["/usr/bin/tail", "-f", "/dev/stderr"]
 
   # GNU libc
@@ -31,8 +30,7 @@ services:
     container_name: gnu
     volumes:
       - ../src:/home/proj/src
+      - ../tests:/home/proj/tests
       - ../Makefile:/home/proj/Makefile
-      - ./data/str:/d2str
-      - ./data/submnt1:/d2strsubmnt1
-      - ./data/submnt2:/d2strsubmnt2
+      - ./data:/d2str
     entrypoint: [ "/usr/bin/tail", "-f", "/dev/stderr" ]

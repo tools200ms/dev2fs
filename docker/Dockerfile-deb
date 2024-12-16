@@ -10,7 +10,7 @@ ENV RUNGID=3300
 
 ENV PCKGS_BASE=''
 ENV PCKGS_DEV='make gcc libc-dev libfuse-dev'
-ENV PCKGS_TEST='gdb valgrind'
+ENV PCKGS_TEST='libcunit1 libcunit1-dev procps python3 sudo gdb valgrind'
 
 RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV $PCKGS_TEST
 
@@ -23,6 +23,8 @@ RUN addgroup --gid $RUNGID $RUNAME && \
     USERHIDPASS=$(dd if=/dev/urandom status=none bs=1024 count=1 | md5sum | cut -c -16) && \
     printf "$USERHIDPASS\n$USERHIDPASS\n$RUNAME\n\n\n\n\nY" | adduser --uid $RUNUID --gid $RUNGID $RUNAME
 RUN su $RUNAME -c "mkdir ~/mnt"
+
+RUN apt autoremove -y
 
 USER $DUNAME
 WORKDIR /home/$DUNAME

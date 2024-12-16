@@ -10,7 +10,7 @@ ENV RUNGID=3300
 
 ENV PCKGS_BASE='bash ncurses-terminfo'
 ENV PCKGS_DEV='make gcc libc-dev fuse-dev'
-ENV PCKGS_TEST='gdb valgrind'
+ENV PCKGS_TEST='cunit cunit-dev python3 sudo gdb valgrind'
 
 RUN dev2_addtools.sh $PCKGS_BASE $PCKGS_DEV $PCKGS_TEST
 
