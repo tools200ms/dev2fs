@@ -37,11 +37,10 @@ ${OUTPUT}: ${BIN_OBJS}
 	mkdir -p ${DIR_BIN}
 	${CC} ${BIN_OBJS} ${LIBS} -o ${DIR_BIN}/${OUTPUT}
 
-
-testrun: compile
-	cd ../test && ./test.sh prepare
-	echo args
-	#./${OUTPUT} ../test/str ../test/mnt
+tests:
+	mkdir -p ${DIR_BIN}
+	gcc -o ${DIR_BIN}/test_lib_messages ../tests/unit/lib_messages.c -I. -lcunit
+	${DIR_BIN}/test_lib_messages
 
 clean:
 	rm -f ${BIN_OBJS}

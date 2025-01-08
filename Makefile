@@ -23,6 +23,10 @@ install:
 	@echo "----- Installing ---------------------------"
 	
 	cp "${BUILD_DIR}/${EXEC_NAME}" "${PREFIX}"
+
+	[ -f "/sbin/mount.${EXEC_NAME}" ] &&
+		rm "/sbin/mount.${EXEC_NAME}" || true
+
 	ln -s "${PREFIX}/${EXEC_NAME}" "/sbin/mount.${EXEC_NAME}"
 	@echo "----- Done. --------------------------------"
 
@@ -36,6 +40,18 @@ clean: clean_current_dir
 
 	$(MAKE) -C ${SRC_DIR} clean
 	@echo "----- Done. --------------------------------"
+
+unittests:
+	@echo "----- Running Unit Tests -------------------"
+	$(MAKE) -C ${SRC_DIR} tests
+	@echo "----- Done. --------------------------------"
+
+funtests: compile
+	mkdir -p log
+	sudo ./build/dev2fs -d -s /d2str /home/test/mnt/ -o allow_other
+
+	#sleep .2; while $(mount | grep -q /home/test/mnt); do sleep .2; done
+	#echo "Starting tests"
 
 release: clean_current_dir
 	@echo "----- Releasing ----------------------------"

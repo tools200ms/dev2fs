@@ -3,9 +3,10 @@
 *.o
 *.so
 
+log/*
 build/*
 release/*
-test/data/*
+docker/data/*
 
 # Development IDEs:
 .kdev4/*
