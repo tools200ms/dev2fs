@@ -24,7 +24,7 @@ install:
 	
 	cp "${BUILD_DIR}/${EXEC_NAME}" "${PREFIX}"
 
-	[ -f "/sbin/mount.${EXEC_NAME}" ] &&
+	[ -f "/sbin/mount.${EXEC_NAME}" ] && \
 		rm "/sbin/mount.${EXEC_NAME}" || true
 
 	ln -s "${PREFIX}/${EXEC_NAME}" "/sbin/mount.${EXEC_NAME}"
