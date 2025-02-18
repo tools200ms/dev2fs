@@ -11,6 +11,7 @@ docker/data/*
 # Development IDEs:
 .kdev4/*
 *.kdev4
+test/
 
 # JetBrains IDE
 .idea/
