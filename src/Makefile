@@ -19,10 +19,15 @@ BIN_OBJS := ${patsubst %.c, %.o, ${SOURCES}}
 CFLAGS += -Wall
 #CFLAGS += -Wimplicit-function-declaration
 
+ifdef DEBUG
+$(info ---=== DEBUG mode is ON: Compiling with debug flags. ===---)
+
 ifeq ("${DEBUG}","y")
 	CFLAGS += -g1
 else ifeq ("${DEBUG}","Y")
 	CFLAGS += -g3
+endif
+# TODO: if ${DEBUG}: 0-3 add aproperiate level
 endif
 
 # targets definitions
