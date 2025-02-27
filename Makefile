@@ -8,7 +8,7 @@ EXEC_NAME := dev2fs
 PREFIX := /usr/local/bin
 
 ABOUT_H = src/${EXEC_NAME}.h
-VERSION := ${shell grep "#define[[:space:]][[:space:]]*DEV2FS_VERSION" $(ABOUT_H) | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
+VERSION := ${shell grep "#define.DEV2FS_VERSION" $(ABOUT_H) | sed -re 's/(.+)\"(.+)\"/\2/' | tr ' ' '_'}
 RELEASE_NAME := ${EXEC_NAME}-${VERSION}
 
 .PHONY: compile install clean clean_current_dir release
