@@ -85,6 +85,7 @@ void sys_init( 	const struct loader *load,
 	op->open		= d2op_open;
 	op->read		= d2op_read;
 
+	op->flush		 = d2op_flush;
 	op->release		= d2op_release;
 
 	// assign file modify operations
@@ -106,8 +107,7 @@ void sys_init( 	const struct loader *load,
 	op->access		= d2op_access;
 
 
-	// flush/sync operations
-	op->flush		 = d2op_flush;
+	// sync operations
 	op->fsync		 = d2op_fsync;
 	op->fsyncdir	 = d2op_fsyncdir;
 

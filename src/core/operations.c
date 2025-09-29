@@ -267,9 +267,33 @@ int d2op_read(	const char 					*path,
 	return read_bytes;
 }
 
+/**
+ * File close call.
+ **/
+int d2op_flush( 	const char 					*path,
+					struct fuse_file_info	*fi 		)
+{
+	MSG_OPSTAT_VERBOSE("FLUSH", path);
+
+	struct file_handler *f_handler;
+	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
+	MSG_DEBUG_DEC("\tFile descriptor", f_handler->fd);
+
+	close( f_handler->fd );
+	// this shall be free by 'release'
+	//free( f_handler );
+
+	MSG_OPSTAT_SUMMARY();
+	return 0;
+}
+
+/**
+ * Last process closes the file (releases)
+ */
 int d2op_release( 	const char 					*path,
 							struct fuse_file_info 	*fi	 )
 {
+
 	//char *full_path = updatePath( path );
 	MSG_OPSTAT_VERBOSE("RELEASE", path);
 	//relesePath( full_path );
@@ -362,20 +386,6 @@ int d2op_truncate( 	const char 				*path,
 	return ret_val;
 }
 
-int d2op_flush( 	const char 					*path,
-					struct fuse_file_info	*fi 		)
-{
-	MSG_OPSTAT_VERBOSE("FLUSH", path);
-
-	//struct file_handler *f_handler;
-	//memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
-
-	//flush
-
-
-	MSG_OPSTAT_SUMMARY();
-	return 0;
-}
 
 int d2op_fsync(		const char 				*path,
 					int 					 isdatasync,
