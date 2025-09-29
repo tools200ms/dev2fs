@@ -279,7 +279,12 @@ int d2op_flush( 	const char 					*path,
 	memcpy( &f_handler, &(fi->fh), sizeof ( struct file_handler * ) );
 	MSG_DEBUG_DEC("\tFile descriptor", f_handler->fd);
 
-	close( f_handler->fd );
+	// You should not close the file descriptor in flush; the kernel may still have references.
+	//close( f_handler->fd );
+
+	if (fsync(f_handler->fd) == -1)
+        return -errno;
+
 	// this shall be free by 'release'
 	//free( f_handler );
 
