@@ -289,6 +289,7 @@ int d2op_flush( 	const char 					*path,
 
 /**
  * Last process closes the file (releases)
+ * Release should be always call if file descriptor is released by all processes
  */
 int d2op_release( 	const char 					*path,
 							struct fuse_file_info 	*fi	 )
