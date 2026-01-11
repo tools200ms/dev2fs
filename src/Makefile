@@ -27,7 +27,7 @@ ifeq ("${DEBUG}","y")
 else ifeq ("${DEBUG}","Y")
 	CFLAGS += -g3
 endif
-# TODO: if ${DEBUG}: 0-3 add aproperiate level
+# TODO: if ${DEBUG}: 0-3 add appropriate level
 endif
 
 # targets definitions
