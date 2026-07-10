@@ -8,8 +8,6 @@ LIBS := -lfuse -L.
 CFLAGS := -D_FILE_OFFSET_BITS=64
 
 DIR_BIN      = ../build
-SOURCES_LIB := ${wildcard lib/*.c}
-OBJS_LIB := ${patsubst %.c, %.o, ${SOURCES_S1}}
 
 SOURCES := ${wildcard *.c shell/*.c lib/*.c core/*.c}
 BIN_OBJS := ${patsubst %.c, %.o, ${SOURCES}}
