@@ -44,7 +44,7 @@ ${OUTPUT}: ${BIN_OBJS}
 
 tests:
 	mkdir -p ${DIR_BIN}
-	gcc -o ${DIR_BIN}/test_lib_messages ../tests/unit/lib_messages.c -I. -lcunit
+	${CC} -o ${DIR_BIN}/test_lib_messages ../tests/unit/lib_messages.c -I. -lcunit
 	${DIR_BIN}/test_lib_messages
 
 clean:
