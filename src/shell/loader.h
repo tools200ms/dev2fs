@@ -40,7 +40,7 @@ void load_init( struct config *conf, struct loader *load );
 /**
 	releases engine's structure
 */
-void load_release();// struct loader *load );
+void load_release( struct loader *load );
 
 /**
 	print information about current configuration
